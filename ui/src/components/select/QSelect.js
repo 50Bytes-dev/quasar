@@ -22,6 +22,7 @@ import { stop, prevent, stopAndPrevent } from '../../utils/event/event.js'
 import { normalizeToInterval } from '../../utils/format/format.js'
 import { shouldIgnoreKey, isKeyCode } from '../../utils/private.keyboard/key-composition.js'
 import { hMergeSlot } from '../../utils/private.render/render.js'
+import { scrollTargetProp } from '../../utils/scroll/scroll.js'
 
 const validateNewValueMode = v => [ 'add', 'add-unique', 'toggle' ].includes(v)
 const reEscapeList = '.*+?^${}()|[]\\'
@@ -83,6 +84,7 @@ export default createComponent({
 
     optionsCover: Boolean,
 
+    menuScrollTarget: scrollTargetProp,
     menuShrink: Boolean,
     menuAnchor: String,
     menuSelf: String,
@@ -1178,6 +1180,7 @@ export default createComponent({
         modelValue: menu.value,
         fit: props.menuShrink !== true,
         cover: props.optionsCover === true && noOptions.value !== true && props.useInput !== true,
+        scrollTarget: props.menuScrollTarget,
         anchor: props.menuAnchor,
         self: props.menuSelf,
         offset: props.menuOffset,

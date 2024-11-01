@@ -180,6 +180,10 @@
       "category": "options"
     },
 
+    "menu-scroll-target": {
+      "extends": "scroll-target"
+    },
+
     "menu-shrink": {
       "type": "Boolean",
       "desc": "Allow the options list to be narrower than the field (only in menu mode)",
