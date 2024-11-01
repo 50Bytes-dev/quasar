@@ -3,6 +3,7 @@
   "private": true,
   "packageManager": "pnpm@9.6.0",
   "scripts": {
+    "preinstall": "npx only-allow@1.2.1 pnpm",
     "lint:root": "eslint .eslintrc.cjs --report-unused-disable-directives --fix",
     "lint": "pnpm lint:root && pnpm --recursive run lint",
     "test": "pnpm build && pnpm --filter quasar test:specs:ci && pnpm --filter quasar test && pnpm --filter @quasar/vite-plugin test",
