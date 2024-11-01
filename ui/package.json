@@ -28,7 +28,6 @@
     "./*": "./*"
   },
   "scripts": {
-    "prepare": "node build/script.build.js",
     "clean": "node build/script.clean.js",
     "build": "node build/script.build.js",
     "dev": "cd ./playground && quasar dev && cd ..",
