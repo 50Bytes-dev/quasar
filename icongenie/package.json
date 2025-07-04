@@ -5,9 +5,16 @@
   "bin": {
     "icongenie": "./bin/icongenie.js"
   },
+  "files": [
+    "bin",
+    "lib",
+    "samples",
+    "README.md",
+    "LICENSE"
+  ],
   "type": "module",
   "scripts": {
-    "lint": "eslint --ext .js ./ --fix --report-unused-disable-directives"
+    "lint": "eslint --cache --fix"
   },
   "repository": {
     "type": "git",
@@ -42,14 +49,13 @@
   },
   "homepage": "https://quasar.dev/icongenie/introduction",
   "dependencies": {
-    "joi": "^17.13.0",
-    "cross-spawn": "^7.0.2",
+    "cross-spawn": "^7.0.6",
     "elementtree": "^0.1.7",
-    "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "imagemin": "^8.0.1",
     "imagemin-pngquant": "^9.0.2",
     "is-png": "^3.0.1",
+    "joi": "^17.13.0",
     "kolorist": "^1.8.0",
     "minimist": "^1.2.8",
     "png2icons": "^2.0.1",
@@ -57,12 +63,14 @@
     "read-chunk": "^4.0.3",
     "sharp": "^0.32.6",
     "svgo": "^3.2.0",
+    "tinyglobby": "^0.2.10",
     "untildify": "^5.0.0",
     "update-notifier": "^7.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "eslint-plugin-n": "^16.6.2"
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "eslint-plugin-n": "^17.16.2"
   },
   "resolutions": {
     "minimist": "^1.2.8"

@@ -14,9 +14,10 @@ export default createDirective(__QUASAR_SSR_SERVER__
         const { modifiers } = binding
 
         // early return, we don't need to do anything
-        if (modifiers.mouse !== true && client.has.touch !== true) {
-          return
-        }
+        if (
+          modifiers.mouse !== true
+          && client.has.touch !== true
+        ) return
 
         const ctx = {
           handler: binding.value,
@@ -105,7 +106,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
             cleanEvt(ctx, 'temp')
 
             // delay needed otherwise selection still occurs
-            ctx.styleCleanup !== void 0 && ctx.styleCleanup(ctx.triggered)
+            ctx.styleCleanup?.(ctx.triggered)
 
             if (ctx.triggered === true) {
               evt !== void 0 && stopAndPrevent(evt)
@@ -165,7 +166,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           cleanEvt(ctx, 'temp')
 
           ctx.timer !== void 0 && clearTimeout(ctx.timer)
-          ctx.styleCleanup !== void 0 && ctx.styleCleanup()
+          ctx.styleCleanup?.()
 
           delete el.__qtouchhold
         }

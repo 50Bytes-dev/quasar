@@ -28,7 +28,14 @@ export default {
     }).format(date),
     firstDayOfWeek: 0, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: 'langit'
+    pluralDay: 'langit',
+    prevMonth: 'Bulan sebelumnya',
+    nextMonth: 'Bulan depan',
+    prevYear: 'Tahun sebelumnya',
+    nextYear: 'Tahun depan',
+    today: 'Hari ini',
+    prevRangeYears: range => `Sebelumnya ${ range } tahun`,
+    nextRangeYears: range => `Seterusnya ${ range } tahun`
   },
   table: {
     noData: 'tiada data tersedia',
@@ -39,6 +46,12 @@ export default {
     allRows: 'semua',
     pagination: (start, end, total) => start + '-' + end + ' / ' + total,
     columns: 'Senaraikan'
+  },
+  pagination: {
+    first: 'Halaman pertama',
+    prev: 'Halaman sebelumnya',
+    next: 'Halaman seterusnya',
+    last: 'Halaman terakhir'
   },
   editor: {
     url: 'URL',

@@ -25,7 +25,14 @@ export default {
     monthsShort: 'जन_फ़र_मार्च_अप्रैल_मई_जून_जुलाई_अग_सितं_अक्तू_नवं_दिसं'.split('_'),
     firstDayOfWeek: 0, // 0-6, 0 - रविवार, 1 - सोमवार, ...
     format24h: false,
-    pluralDay: 'दिन'
+    pluralDay: 'दिन',
+    prevMonth: 'पिछला महीना',
+    nextMonth: 'अगला महीना',
+    prevYear: 'पिछला साल',
+    nextYear: 'अगला साल',
+    today: 'आज',
+    prevRangeYears: range => `पिछला ${ range } साल`,
+    nextRangeYears: range => `अगला ${ range } साल`
   },
   table: {
     noData: 'कोई डेटा उपलब्ध नहीं है',
@@ -40,6 +47,12 @@ export default {
     allRows: 'सभी',
     pagination: (start, end, total) => start + '-' + end + ' कुल ' + total,
     columns: 'कॉलम'
+  },
+  pagination: {
+    first: 'पहला पृष्ठ',
+    prev: 'पिछला पृष्ठ',
+    next: 'अगला पृष्ठ',
+    last: 'अंतिम पृष्ठ'
   },
   editor: {
     url: 'URL',

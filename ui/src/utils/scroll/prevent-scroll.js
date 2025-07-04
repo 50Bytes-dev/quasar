@@ -60,9 +60,7 @@ function onAppleScroll (e) {
 }
 
 function onAppleResize (evt) {
-  if (vpPendingUpdate === true) {
-    return
-  }
+  if (vpPendingUpdate === true) return
 
   vpPendingUpdate = true
 
@@ -171,20 +169,14 @@ export default function (state) {
       return
     }
 
-    if (registered > 1) {
-      return
-    }
+    if (registered > 1) return
   }
   else {
-    if (registered === 0) {
-      return
-    }
+    if (registered === 0) return
 
     registered--
 
-    if (registered > 0) {
-      return
-    }
+    if (registered > 0) return
 
     action = 'remove'
 

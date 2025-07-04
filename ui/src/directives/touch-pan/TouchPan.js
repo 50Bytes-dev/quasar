@@ -126,9 +126,10 @@ export default createDirective(__QUASAR_SSR_SERVER__
 
       beforeMount (el, { value, modifiers }) {
         // early return, we don't need to do anything
-        if (modifiers.mouse !== true && client.has.touch !== true) {
-          return
-        }
+        if (
+          modifiers.mouse !== true
+          && client.has.touch !== true
+        ) return
 
         function handleEvent (evt, mouseEvent) {
           if (modifiers.mouse === true && mouseEvent === true) {
@@ -232,9 +233,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           },
 
           move (evt) {
-            if (ctx.event === void 0) {
-              return
-            }
+            if (ctx.event === void 0) return
 
             const
               pos = position(evt),
@@ -246,9 +245,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
             // https://bugs.chromium.org/p/chromium/issues/detail?id=161464
             // https://bugs.chromium.org/p/chromium/issues/detail?id=721341
             // https://github.com/quasarframework/quasar/issues/10721
-            if (distX === 0 && distY === 0) {
-              return
-            }
+            if (distX === 0 && distY === 0) return
 
             ctx.lastEvt = evt
 
@@ -352,15 +349,13 @@ export default createDirective(__QUASAR_SSR_SERVER__
           },
 
           end (evt, abort) {
-            if (ctx.event === void 0) {
-              return
-            }
+            if (ctx.event === void 0) return
 
             cleanEvt(ctx, 'temp')
             client.is.firefox === true && preventDraggable(el, false)
 
             if (abort === true) {
-              ctx.styleCleanup !== void 0 && ctx.styleCleanup()
+              ctx.styleCleanup?.()
 
               if (ctx.event.detected !== true && ctx.initialEvent !== void 0) {
                 ctx.initialEvent.target.dispatchEvent(ctx.initialEvent.event)
@@ -431,7 +426,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           cleanEvt(ctx, 'temp')
 
           client.is.firefox === true && preventDraggable(el, false)
-          ctx.styleCleanup !== void 0 && ctx.styleCleanup()
+          ctx.styleCleanup?.()
 
           delete el.__qtouchpan
         }

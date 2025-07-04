@@ -25,7 +25,14 @@ export default {
     monthsShort: '1월_2월_3월_4월_5월_6월_7월_8월_9월_10월_11월_12월'.split('_'),
     firstDayOfWeek: 0, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: '일'
+    pluralDay: '일',
+    prevMonth: '지난 달',
+    nextMonth: '다음 달',
+    prevYear: '작년',
+    nextYear: '내년',
+    today: '오늘',
+    prevRangeYears: range => `이전 ${ range } 년`,
+    nextRangeYears: range => `다음 ${ range } 년`
   },
   table: {
     noData: '데이터가 없습니다.',
@@ -40,6 +47,12 @@ export default {
     allRows: '전체',
     pagination: (start, end, total) => total + ' 중 ' + start + '-' + end,
     columns: '열'
+  },
+  pagination: {
+    first: '첫 페이지',
+    prev: '이전 페이지',
+    next: '다음 페이지',
+    last: '마지막 페이지'
   },
   editor: {
     url: 'URL',

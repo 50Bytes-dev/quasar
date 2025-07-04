@@ -187,10 +187,7 @@ export default createComponent({
       function hideScrollbar () {
         if (timer === null) {
           // if it has no scrollbar then there's nothing to do
-
-          if (el.scrollHeight > $q.screen.height) {
-            return
-          }
+          if (el.scrollHeight > $q.screen.height) return
 
           el.classList.add('hide-scrollbar')
         }

@@ -111,9 +111,7 @@ export function setPosition (cfg, retryNumber = 0) {
     cfg.targetEl === null
     || cfg.anchorEl === null
     || retryNumber > 5 // we should try only a few times
-  ) {
-    return
-  }
+  ) return
 
   // some browsers report zero height or width because
   // we are trying too early to get these dimensions

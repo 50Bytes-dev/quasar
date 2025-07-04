@@ -1,3 +1,4 @@
+const cloneDeep = require('lodash/cloneDeep.js')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 
@@ -12,7 +13,7 @@ const { fixAndroidCleartext } = require('./android-cleartext.js')
 
 module.exports.QuasarModeDevserver = class QuasarModeDevserver extends AppDevserver {
   #pid = 0
-  #server
+  #server = null
   #target
   #cordovaConfigFile = new CordovaConfigFile()
 
@@ -48,7 +49,7 @@ module.exports.QuasarModeDevserver = class QuasarModeDevserver extends AppDevser
   }
 
   async #runWebpack (quasarConf) {
-    if (this.#server) {
+    if (this.#server !== null) {
       await this.#server.stop()
       this.#server = null
     }
@@ -61,19 +62,18 @@ module.exports.QuasarModeDevserver = class QuasarModeDevserver extends AppDevser
       const compiler = webpack(webpackConf)
 
       compiler.hooks.done.tap('done-compiling', stats => {
-        if (started === true) { return }
+        if (started === true) return
 
         // start dev server if there are no errors
-        if (stats.hasErrors() === true) {
-          return
-        }
+        if (stats.hasErrors() === true) return
 
         started = true
         resolve()
       })
 
       // start building & launch server
-      this.#server = new WebpackDevServer(quasarConf.devServer, compiler)
+      // deep clone to avoid webpack-dev-server mutating the original config which causes double compilation
+      this.#server = new WebpackDevServer(cloneDeep(quasarConf.devServer), compiler)
       this.#server.start()
     })
   }

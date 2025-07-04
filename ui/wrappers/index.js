@@ -6,6 +6,15 @@
 //  but they are useful only for Quasar CLI projects
 // They are typed via module augmentation by `@quasar/app-webpack` / `@quasar/app-vite`
 
+/*******************************************************
+ * Warning!
+ * All these are deprecated starting with
+ *    @quasar/app-vite v2
+ *    @quasar/app-webpack v4
+ *
+ * Use the new wrappers from #q-app/wrappers
+ *******************************************************/
+
 export function boot (callback) {
   return callback
 }
@@ -30,18 +39,6 @@ export function ssrMiddleware (callback) {
   return callback
 }
 
-export function bexBackground (callback) {
-  return callback
-}
-
-export function bexContent (callback) {
-  return callback
-}
-
-export function bexDom (callback) {
-  return callback
-}
-
 /**
  * Below only for @quasar/app-webpack v3
  */
@@ -51,7 +48,7 @@ export function ssrProductionExport (callback) {
 }
 
 /**
- * Below only for @quasar/app-vite & @quasar/app-webpack v4+
+ * Below only for @quasar/app-vite v1
  */
 
 export function ssrCreate (callback) {
@@ -71,5 +68,21 @@ export function ssrServeStaticContent (callback) {
 }
 
 export function ssrRenderPreloadTag (callback) {
+  return callback
+}
+
+/**
+ * Below only for legacy @quasar/app-vite v1 & @quasar/app-webpack v3
+ */
+
+export function bexBackground (callback) {
+  return callback
+}
+
+export function bexContent (callback) {
+  return callback
+}
+
+export function bexDom (callback) {
   return callback
 }

@@ -14,25 +14,9 @@
 
     "options": {
       "type": "Array",
-      "desc": "Array of objects with value, label, and disable (optional) props. The binary components will be created according to this array; Props from QToggle, QCheckbox or QRadio can also be added as key/value pairs to control the components singularly",
+      "desc": "Array of objects that the binary components will be created from. For best performance reference a variable in your scope. Canonical form of each object is with 'label' (String), 'value' (Any) and optional 'disable' (Boolean) props (can be customized with options-value/option-label/option-disable props) along with any other props from QToggle, QCheckbox, or QRadio.",
       "default": "[]",
       "definition": {
-        "label": {
-          "type": "String",
-          "desc": "Label to display along the component",
-          "required": true,
-          "examples": [ "'Option 1'", "'Option 2'", "'Option 3'" ]
-        },
-        "value": {
-          "type": "Any",
-          "desc": "Value of the option that will be used by the component model",
-          "required": true,
-          "examples": [ "'op1'", "'op2'", "'op3'" ]
-        },
-        "disable": {
-          "type": "Boolean",
-          "desc": "If true, the option will be disabled"
-        },
         "...props": {
           "type": "Any",
           "desc": "Any other props from QToggle, QCheckbox, or QRadio",

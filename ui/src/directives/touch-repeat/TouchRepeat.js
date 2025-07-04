@@ -46,9 +46,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           modifiers.mouse !== true
           && client.has.touch !== true
           && keyboard.length === 0
-        ) {
-          return
-        }
+        ) return
 
         const durations = typeof arg === 'string' && arg.length !== 0
           ? arg.split(':').map(val => parseInt(val, 10))
@@ -77,9 +75,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
               if (durations[ 0 ] === 0 || ctx.event !== void 0) {
                 stopAndPrevent(evt)
                 el.focus()
-                if (ctx.event !== void 0) {
-                  return
-                }
+                if (ctx.event !== void 0) return
               }
 
               addEvt(ctx, 'temp', [
@@ -140,9 +136,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
             const fn = () => {
               ctx.timer = void 0
 
-              if (ctx.event === void 0) {
-                return
-              }
+              if (ctx.event === void 0) return
 
               if (ctx.event.repeatCount === 0) {
                 ctx.event.evt = evt
@@ -190,12 +184,10 @@ export default createDirective(__QUASAR_SSR_SERVER__
           },
 
           end (evt) {
-            if (ctx.event === void 0) {
-              return
-            }
+            if (ctx.event === void 0) return
 
-            ctx.styleCleanup !== void 0 && ctx.styleCleanup(true)
-            evt !== void 0 && ctx.event.repeatCount > 0 && stopAndPrevent(evt)
+            ctx.styleCleanup?.(true)
+            if ((evt !== void 0) && (ctx.event.repeatCount > 0)) stopAndPrevent(evt)
 
             cleanEvt(ctx, 'temp')
 
@@ -256,7 +248,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           cleanEvt(ctx, 'main')
           cleanEvt(ctx, 'temp')
 
-          ctx.styleCleanup !== void 0 && ctx.styleCleanup()
+          ctx.styleCleanup?.()
 
           delete el.__qtouchrepeat
         }

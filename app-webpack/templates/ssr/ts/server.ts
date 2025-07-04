@@ -9,24 +9,36 @@
  * Make sure to yarn add / npm install (in your project root)
  * anything you import here (except for express and compression).
  */
-import express from 'express';
+import type { Server } from 'node:http';
 import compression from 'compression';
+import type { Application, Request, Response } from 'express';
+import express from 'express';
 import {
-  ssrClose,
-  ssrCreate,
-  ssrListen,
-  ssrServeStaticContent,
-  ssrRenderPreloadTag,
-} from 'quasar/wrappers';
+  defineSsrCreate,
+  defineSsrInjectDevMiddleware,
+  defineSsrListen,
+  defineSsrClose,
+  defineSsrServeStaticContent,
+  defineSsrRenderPreloadTag
+} from '#q-app/wrappers';
+
+declare module '#q-app' {
+  interface SsrDriver {
+    app: Application;
+    listenResult: Server;
+    request: Request;
+    response: Response;
+  }
+}
 
 /**
  * Create your webserver and return its instance.
  * If needed, prepare your webserver to receive
  * connect-like middlewares.
  *
- * Can be async: ssrCreate(async ({ ... }) => { ... })
+ * Can be async: defineSsrCreate(async ({ ... }) => { ... })
  */
-export const create = ssrCreate((/* { ... } */) => {
+export const create = defineSsrCreate((/* { ... } */) => {
   const app = express();
 
   // attackers can use this header to detect apps running Express
@@ -43,6 +55,19 @@ export const create = ssrCreate((/* { ... } */) => {
 });
 
 /**
+ * Used by Quasar SSR dev server to inject middleware into the webserver.
+ * It uses it to handle Webpack dev server, handle public paths, etc.
+ * The given middleware is compatible with `node:http`'s Server, Express, Connect, etc.
+ *
+ * Can be async: defineSsrInjectDevMiddleware(async ({ app }) => { ... })
+ */
+export const injectDevMiddleware = defineSsrInjectDevMiddleware(({ app }) => {
+  return (middleware) => {
+    app.use(middleware);
+  };
+});
+
+/**
  * You need to make the server listen to the indicated port
  * and return the listening instance or whatever you need to
  * close the server with.
@@ -53,9 +78,9 @@ export const create = ssrCreate((/* { ... } */) => {
  * For production, you can instead export your
  * handler for serverless use or whatever else fits your needs.
  *
- * Can be async: ssrListen(async ({ app, devHttpsApp, port }) => { ... })
+ * Can be async: defineSsrListen(async ({ app, devHttpsApp, port }) => { ... })
  */
-export const listen = ssrListen(({ app, devHttpsApp, port }) => {
+export const listen = defineSsrListen(({ app, devHttpsApp, port }) => {
   const server = devHttpsApp || app;
   return server.listen(port, () => {
     if (process.env.PROD) {
@@ -72,9 +97,9 @@ export const listen = ssrListen(({ app, devHttpsApp, port }) => {
  * Should you need the result of the "listen()" call above,
  * you can use the "listenResult" param.
  *
- * Can be async: ssrClose(async ({ listenResult }) => { ... }))
+ * Can be async: defineSsrClose(async ({ listenResult }) => { ... }))
  */
-export const close = ssrClose(({ listenResult }) => {
+export const close = defineSsrClose(({ listenResult }) => {
   return listenResult.close();
 });
 
@@ -86,10 +111,10 @@ const maxAge = process.env.DEV ? 0 : 1000 * 60 * 60 * 24 * 30;
  *
  * Notice resolve.urlPath(urlPath) and resolve.public(pathToServe) usages.
  *
- * Can be async: ssrServeStaticContent(async ({ app, resolve }) => {
+ * Can be async: defineSsrServeStaticContent(async ({ app, resolve }) => {
  * Can return an async function: return async ({ urlPath = '/', pathToServe = '.', opts = {} }) => {
  */
-export const serveStaticContent = ssrServeStaticContent(({ app, resolve }) => {
+export const serveStaticContent = defineSsrServeStaticContent(({ app, resolve }) => {
   return ({ urlPath = '/', pathToServe = '.', opts = {} }) => {
     const serveFn = express.static(resolve.public(pathToServe), { maxAge, ...opts });
     app.use(resolve.urlPath(urlPath), serveFn);
@@ -108,7 +133,7 @@ const pngRE = /\.png$/;
  * Should return a String with HTML output
  * (if any) for preloading indicated file
  */
-export const renderPreloadTag = ssrRenderPreloadTag((file/* , { ssrContext } */) => {
+export const renderPreloadTag = defineSsrRenderPreloadTag((file/* , { ssrContext } */) => {
   if (jsRE.test(file) === true) {
     return `<script src="${file}" defer crossorigin></script>`;
   }

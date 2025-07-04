@@ -1,6 +1,7 @@
 const fs = require('node:fs')
 const { basename, dirname, join } = require('node:path')
-const fglob = require('fast-glob')
+const { globSync } = require('tinyglobby')
+const { stringifyJSON, parseJSON } = require('confbox')
 
 const { log, warn } = require('../../utils/logger.js')
 const { ensureConsistency } = require('./ensure-consistency.js')
@@ -55,6 +56,7 @@ const sslSkipVersion = {
   4: '^0.2.0',
   5: '^0.3.0',
   6: '^0.4.0',
+  7: '^0.4.0',
   default: '^0.4.0'
 }
 
@@ -74,8 +76,9 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
 
     this.#tamperedFiles = []
 
+    // TODO: support other formats: .js and .ts
     const capJsonPath = appPaths.resolve.capacitor('capacitor.config.json')
-    const capJson = JSON.parse(
+    const capJson = parseJSON(
       fs.readFileSync(capJsonPath, 'utf-8')
     )
 
@@ -85,7 +88,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
       path: capJsonPath,
       name: 'capacitor.config.json',
       content: this.#updateCapJson(quasarConf, capJson, capVersion, target),
-      originalContent: JSON.stringify(capJson, null, 2)
+      originalContent: stringifyJSON(capJson)
     })
 
     this.#save()
@@ -93,9 +96,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
   }
 
   reset () {
-    if (this.#tamperedFiles.length === 0) {
-      return
-    }
+    if (this.#tamperedFiles.length === 0) return
 
     this.#tamperedFiles.forEach(file => {
       file.content = file.originalContent
@@ -138,7 +139,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
       }
     }
 
-    return JSON.stringify(capJson, null, 2)
+    return stringifyJSON(capJson)
   }
 
   #updateCapPkg (quasarConf) {
@@ -148,7 +149,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
     } = this.#ctx
 
     const capPkgPath = appPaths.resolve.capacitor('package.json')
-    const capPkg = JSON.parse(
+    const capPkg = parseJSON(
       fs.readFileSync(capPkgPath, 'utf-8')
     )
 
@@ -159,7 +160,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
       author: appPkg.author
     })
 
-    fs.writeFileSync(capPkgPath, JSON.stringify(capPkg, null, 2), 'utf-8')
+    fs.writeFileSync(capPkgPath, stringifyJSON(capPkg), 'utf-8')
   }
 
   #updateSSL (quasarConf, target, capVersion) {
@@ -169,10 +170,8 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
     if (capVersion >= 4) {
       const hasPlugin = getPackageJson('@jcesarmobile/ssl-skip', appPaths.capacitorDir) !== void 0
 
-      if (add ? hasPlugin : !hasPlugin) {
-        // nothing to do
-        return
-      }
+      // nothing to do
+      if (add ? hasPlugin : !hasPlugin) return
 
       const fn = `${ add ? '' : 'un' }installPackage`
       const version = sslSkipVersion[ capVersion ] || sslSkipVersion.default
@@ -263,10 +262,8 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
 
     const originalContent = fs.readFileSync(file, 'utf-8')
 
-    if (originalContent.indexOf(content) > -1) {
-      // it's already there
-      return
-    }
+    // it's already there
+    if (originalContent.indexOf(content) > -1) return
 
     const index = originalContent.indexOf(needle)
 
@@ -282,9 +279,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
 
   // for Capacitor 1-3
   #removeFromFile (file, content) {
-    if (!file) {
-      return
-    }
+    if (!file) return
 
     const originalContent = fs.readFileSync(file, 'utf-8')
     const index = originalContent.indexOf(content)
@@ -300,7 +295,7 @@ module.exports.CapacitorConfigFile = class CapacitorConfigFile {
     const { appPaths } = this.#ctx
 
     const capacitorSrcPath = appPaths.resolve.capacitor('android/app/src/main/java')
-    let mainActivityPath = fglob.sync('**/MainActivity.java', { cwd: capacitorSrcPath, absolute: true })
+    let mainActivityPath = globSync('**/MainActivity.java', { cwd: capacitorSrcPath, absolute: true })
 
     if (mainActivityPath.length > 0) {
       if (mainActivityPath.length > 1) {

@@ -34,7 +34,7 @@
 
     "options": {
       "type": "Array",
-      "desc": "Available options that the user can select from. For best performance freeze the list of options.",
+      "desc": "Array of objects with available options that the user can select from. For best performance freeze the list of options. Canonical form of each object is with 'label' (String), 'value' (Any) and optional 'disable' (Boolean) props (can be customized with options-value/option-label/option-disable props).",
       "default": "[]",
       "examples": [
         "[ 'Tesla', 'iPhone' ]",
@@ -264,7 +264,7 @@
 
     "fill-input": {
       "type": "Boolean",
-      "desc": "Fills the input with current value; Useful along with 'hide-selected'; Does NOT works along with 'multiple' selection",
+      "desc": "Fills the input with current value; Useful along with 'hide-selected'; Does NOT work along with 'multiple' selection",
       "category": "behavior"
     },
 
@@ -419,6 +419,10 @@
           "type": "Boolean",
           "desc": "Always true -- passed down as prop to QItem (when using QItem)"
         },
+        "html": {
+          "type": "Boolean",
+          "desc": "Is the content HTML?"
+        },
         "removeAtIndex": {
           "type": "Function",
           "desc": "Remove selected option located at specific index",
@@ -461,6 +465,14 @@
         "opt": {
           "type": "Any",
           "desc": "Option -- its value is taken from 'options' prop"
+        },
+        "html": {
+          "type": "Boolean",
+          "desc": "Is the content HTML?"
+        },
+        "label": {
+          "type": "String",
+          "desc": "Label of the option"
         },
         "selected": {
           "type": "Boolean",

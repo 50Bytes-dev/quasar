@@ -12,7 +12,7 @@ describe('quasar plugin', () => {
   })
 
   describe('vite:quasar:vite-conf', () => {
-    test('should throw an error if test is not added after Vteste Vue plugin', () => {
+    test('should throw an error if test is not added after Vite Vue plugin', () => {
       const [ viteConfPlugin ] = quasar()
 
       const configResolved = viteConfPlugin.configResolved
@@ -28,7 +28,7 @@ describe('quasar plugin', () => {
       expect(processExit).toHaveBeenCalledWith(1)
     })
 
-    test('should not throw an error if test is added after Vteste Vue plugin', () => {
+    test('should not throw an error if test is added after Vite Vue plugin', () => {
       const [ viteConfPlugin ] = quasar()
 
       const configResolved = viteConfPlugin.configResolved

@@ -1,5 +1,6 @@
 import { join, basename } from 'node:path'
-import glob from 'fast-glob'
+import { pathToFileURL } from 'node:url'
+import { globSync } from 'tinyglobby'
 import { merge } from 'webpack-merge'
 import fse from 'fs-extra'
 
@@ -936,7 +937,10 @@ function fillAPI (apiType, list, encodeFn) {
       let RuntimeComponent
 
       try {
-        const comp = await import(componentPath)
+        const comp = await import(
+          pathToFileURL(componentPath)
+        )
+
         RuntimeComponent = comp.default
       }
       catch (err) {
@@ -1385,7 +1389,7 @@ export async function generate ({ compact = false } = {}) {
     const list = []
 
     const plugins = await Promise.all(
-      glob.sync([
+      globSync([
         'src/plugins/*/*.json',
         'src/Brand.json'
       ], { cwd: rootFolder, absolute: true })
@@ -1393,14 +1397,12 @@ export async function generate ({ compact = false } = {}) {
     )
 
     const directives = await Promise.all(
-      glob
-        .sync('src/directives/*/*.json', { cwd: rootFolder, absolute: true })
+      globSync('src/directives/*/*.json', { cwd: rootFolder, absolute: true })
         .map(fillAPI('directive', list, encodeFn))
     )
 
     const components = await Promise.all(
-      glob
-        .sync('src/components/*/Q*.json', { cwd: rootFolder, absolute: true })
+      globSync('src/components/*/Q*.json', { cwd: rootFolder, absolute: true })
         .map(fillAPI('component', list, encodeFn))
     )
 

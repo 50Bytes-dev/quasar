@@ -29,7 +29,14 @@ export default {
     monthsShort: 'Янв_Фев_Мар_Апр_Май_Июн_Июл_Авг_Сен_Окт_Ноя_Дек'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'дней'
+    pluralDay: 'дней',
+    prevMonth: 'Предыдущий месяц',
+    nextMonth: 'Следующий месяц',
+    prevYear: 'Предыдущий год',
+    nextYear: 'Следующий год',
+    today: 'Сегодня',
+    prevRangeYears: range => `Предыдущий ${ range } Годы`,
+    nextRangeYears: range => `Далее ${ range } годы`
   },
   table: {
     noData: 'Нет данных',
@@ -44,6 +51,12 @@ export default {
     allRows: 'Все',
     pagination: (start, end, total) => start + '-' + end + ' из ' + total,
     columns: 'Колонки'
+  },
+  pagination: {
+    first: 'Первая страница',
+    prev: 'Предыдущая страница',
+    next: 'Следующая страница',
+    last: 'Последняя страница'
   },
   editor: {
     url: 'URL',

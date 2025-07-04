@@ -25,7 +25,14 @@ export default {
     monthsShort: 'មករា_កុម្ភៈ_មីនា_មេសា_ឧសភា_មិថុនា_កក្កដា_សីហា_កញ្ញា_តុលា_វិច្ឆិកា_ធ្នូ'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: 'ថ្ងៃ'
+    pluralDay: 'ថ្ងៃ',
+    prevMonth: 'ខែមុន',
+    nextMonth: 'ខែក្រោយ',
+    prevYear: 'ឆ្នាំមុន',
+    nextYear: 'ឆ្នាំក្រោយ',
+    today: 'ថ្ងៃនេះ',
+    prevRangeYears: range => `មុន ${ range } ឆ្នាំ`,
+    nextRangeYears: range => `បន្ទាប់ ${ range } ឆ្នាំ`
   },
   table: {
     noData: 'គ្មានទិន្ន័យ',
@@ -40,6 +47,12 @@ export default {
     allRows: 'ទាំងអស់',
     pagination: (start, end, total) => start + '-' + end + ' នៃ ' + total,
     columns: 'ជួរឈរ'
+  },
+  pagination: {
+    first: 'ទំព័រដំបូង',
+    prev: 'ទំព័រមុន',
+    next: 'ទំព័របន្ទាប់',
+    last: 'ទំព័រចុងក្រោយ'
   },
   editor: {
     url: 'URL',

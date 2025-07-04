@@ -1,10 +1,11 @@
+import { defineConfig } from '#q-app/wrappers'
 import { fileURLToPath } from 'node:url'
 
 import mdPlugin from './build/md/index.js'
 import examplesPlugin from './build/examples.js'
 import manualChunks from './build/chunks.js'
 
-export default ctx => ({
+export default defineConfig(ctx => ({
   boot: [
     { path: 'gdpr', server: false }
   ],
@@ -38,7 +39,8 @@ export default ctx => ({
       examplesPlugin(ctx.prod),
       [ 'vite-plugin-checker', {
         eslint: {
-          lintCommand: 'eslint --report-unused-disable-directives "./**/*.{js,mjs,cjs,vue}"'
+          lintCommand: 'eslint --cache "./**/*.{js,mjs,cjs,vue}"',
+          useFlatConfig: true
         }
       }, { server: false } ]
     ],
@@ -121,4 +123,4 @@ export default ctx => ({
       })
     }
   }
-})
+}))

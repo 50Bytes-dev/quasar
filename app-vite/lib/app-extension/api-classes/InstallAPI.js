@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'node:path'
 import { merge } from 'webpack-merge'
 import semver from 'semver'
+import { parseJSON, stringifyJSON } from 'confbox'
 
 import { warn, fatal } from '../../utils/logger.js'
 import { getPackageJson } from '../../utils/get-package-json.js'
@@ -133,9 +134,7 @@ export class InstallAPI extends BaseAPI {
    * @param {object|string} extPkg - Object to extend with or relative path to a JSON file
    */
   extendPackageJson (extPkg) {
-    if (!extPkg) {
-      return
-    }
+    if (!extPkg) return
 
     if (typeof extPkg === 'string') {
       const dir = getCallerPath()
@@ -159,22 +158,23 @@ export class InstallAPI extends BaseAPI {
           fs.readFileSync(source, 'utf-8')
         )
       }
-      catch (e) {
+      catch (_) {
         warn(`Extension(${ this.extId }): extendPackageJson() - "${ extPkg }" is malformed`)
         warn()
         process.exit(1)
       }
     }
 
-    if (Object(extPkg) !== extPkg || Object.keys(extPkg).length === 0) {
-      return
-    }
+    if (
+      Object(extPkg) !== extPkg
+      || Object.keys(extPkg).length === 0
+    ) return
 
     const pkg = merge({}, this.ctx.pkg.appPkg, extPkg)
 
     fs.writeFileSync(
       this.resolve.app('package.json'),
-      JSON.stringify(pkg, null, 2),
+      stringifyJSON(pkg),
       'utf-8'
     )
 
@@ -205,16 +205,19 @@ export class InstallAPI extends BaseAPI {
       //  which usually means we are dealing with an extended JSON flavour,
       //  for example JSON with comments or JSON5.
       // Notable examples are TS 'tsconfig.json' or VSCode 'settings.json'
+      // TODO: use parseJSONC/stringifyJSONC from confbox
       try {
-        const data = merge({}, fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, 'utf-8')) : {}, newData)
+        const existingData = fs.existsSync(filePath) ? parseJSON(fs.readFileSync(filePath, 'utf-8')) : {}
+        const data = merge({}, existingData, newData)
 
         fs.writeFileSync(
           this.resolve.app(file),
-          JSON.stringify(data, null, 2),
+          // if file exists, preserve indentation, otherwise use 2 spaces
+          stringifyJSON(data, { indent: Object.keys(existingData).length > 0 ? undefined : 2 }),
           'utf-8'
         )
       }
-      catch (e) {
+      catch (_) {
         warn()
         warn(`Extension(${ this.extId }): extendJsonFile() - "${ filePath }" doesn't conform to JSON format: this could happen if you are trying to update flavoured JSON files (eg. JSON with Comments or JSON5). Skipping...`)
         warn(`Extension(${ this.extId }): extendJsonFile() - The extension tried to apply these updates to "${ filePath }" file: ${ JSON.stringify(newData) }`)

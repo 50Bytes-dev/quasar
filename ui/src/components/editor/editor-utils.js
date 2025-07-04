@@ -31,15 +31,16 @@ function getBtn (eVm, btn, clickHandler, active = false) {
       : false),
     child = []
 
-  if (btn.tip && eVm.$q.platform.is.desktop) {
+  if (eVm.$q.platform.is.desktop && (btn.tip || btn.htmlTip)) {
     const Key = btn.key
       ? h('div', [
         h('small', `(CTRL + ${ String.fromCharCode(btn.key) })`)
       ])
       : null
+
     child.push(
       h(QTooltip, { delay: 1000 }, () => [
-        h('div', { innerHTML: btn.tip }),
+        h('div', btn.htmlTip ? { innerHTML: btn.htmlTip } : btn.tip),
         Key
       ])
     )
@@ -51,10 +52,11 @@ function getBtn (eVm, btn, clickHandler, active = false) {
     color: toggled ? btn.toggleColor || eVm.props.toolbarToggleColor : btn.color || eVm.props.toolbarColor,
     textColor: toggled && !eVm.props.toolbarPush ? null : btn.textColor || eVm.props.toolbarTextColor,
     label: btn.label,
+    'aria-label': btn.label == null ? btn.tip : void 0,
     disable: btn.disable ? (typeof btn.disable === 'function' ? btn.disable(eVm) : true) : false,
     size: 'sm',
     onClick (e) {
-      clickHandler && clickHandler()
+      clickHandler?.()
       run(e, btn, eVm)
     }
   }, () => child)
@@ -120,7 +122,7 @@ function getDropdown (eVm, btn) {
         dense: true,
         onClick (e) {
           closeDropdown()
-          eVm.contentRef.value !== null && eVm.contentRef.value.focus()
+          e?.qAvoidFocus !== true && eVm.contentRef.value?.focus()
           eVm.caret.restore()
           run(e, btn, eVm)
         }
@@ -246,9 +248,7 @@ export function getLinkEditor (eVm) {
           link = evt.target.value
         },
         onKeydown: evt => {
-          if (shouldIgnoreKey(evt) === true) {
-            return
-          }
+          if (shouldIgnoreKey(evt) === true) return
 
           switch (evt.keyCode) {
             case 13: // ENTER key
@@ -268,7 +268,6 @@ export function getLinkEditor (eVm) {
       getGroup([
         h(QBtn, {
           key: 'qedt_btm_rem',
-          tabindex: -1,
           ...eVm.buttonProps.value,
           label: eVm.$q.lang.label.remove,
           noCaps: true,

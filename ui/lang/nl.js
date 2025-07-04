@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Jan_Feb_Mrt_Apr_Mei_Jun_Jul_Aug_Sep_Okt_Nov_Dec'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'dagen'
+    pluralDay: 'dagen',
+    prevMonth: 'Vorige maand',
+    nextMonth: 'Volgende maand',
+    prevYear: 'Vorig jaar',
+    nextYear: 'Volgend jaar',
+    today: 'Vandaag',
+    prevRangeYears: range => `Vorige ${ range } jaren`,
+    nextRangeYears: range => `Volgende ${ range } jaren`
   },
   table: {
     noData: 'Geen gegevens beschikbaar',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Alle',
     pagination: (start, end, total) => start + '-' + end + ' van ' + total,
     columns: 'Kolommen'
+  },
+  pagination: {
+    first: 'Eerste pagina',
+    prev: 'Vorige pagina',
+    next: 'Volgende pagina',
+    last: 'Laatste pagina'
   },
   editor: {
     url: 'URL',

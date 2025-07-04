@@ -37,7 +37,7 @@ const render = getProdRenderFunction({
   vueRenderToString: renderToString,
   basedir: __dirname,
   clientManifest,
-  serverEntry,
+  serverEntry: serverEntry.default,
   renderTemplate,
   renderPreloadTag,
   manualStoreSerialization: <%= ssr.manualStoreSerialization === true %>
@@ -72,6 +72,7 @@ export async function startServer () {
 
   <% if (ssr.pwa) { %>
   // serve the service worker with no cache
+  <% /* Keep SsrServeStaticFnParams["opts"] in sync */ %>
   await serveStatic({ urlPath: '/<%= pwa.swFilename %>', pathToServe: '<%= pwa.swFilename %>', opts: { maxAge: 0 } })
   <% } %>
 

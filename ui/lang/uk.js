@@ -29,7 +29,14 @@ export default {
     monthsShort: 'Січ_Лют_Бер_Кві_Тра_Чер_Лип_Сер_Вер_Жов_Лис_Гру'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'днів'
+    pluralDay: 'днів',
+    prevMonth: 'Попередній місяць',
+    nextMonth: 'Наступного місяця',
+    prevYear: 'Попередній рік',
+    nextYear: 'Наступного року',
+    today: 'Сьогодні',
+    prevRangeYears: range => `Попередній ${ range } роки`,
+    nextRangeYears: range => `Далі ${ range } роки`
   },
   table: {
     noData: 'Немає даних',
@@ -44,6 +51,12 @@ export default {
     allRows: 'Усі',
     pagination: (start, end, total) => start + '-' + end + ' з ' + total,
     columns: 'Колонки'
+  },
+  pagination: {
+    first: 'Перша сторінка',
+    prev: 'Попередня сторінка',
+    next: 'Наступна сторінка',
+    last: 'Остання сторінка'
   },
   editor: {
     url: 'URL',

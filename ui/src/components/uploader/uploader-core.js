@@ -203,9 +203,7 @@ export function getRenderer (getPlugin, expose) {
   }
 
   function batchRemoveFiles (statusList, cb) {
-    if (props.disable === true) {
-      return
-    }
+    if (props.disable === true) return
 
     const removed = {
       files: [],

@@ -37,7 +37,7 @@ function getSpawnOutput (command) {
       ? green(String(child.output[ 1 ]).trim())
       : gray('Not installed')
   }
-  catch (err) {
+  catch (_) {
     return gray('Not installed')
   }
 }
@@ -84,7 +84,6 @@ print({ key: 'Important local packages', section: true })
   'vue',
   'vue-router',
   'pinia',
-  'vuex',
   'eslint',
   'esbuild',
   'typescript',

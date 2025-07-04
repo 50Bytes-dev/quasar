@@ -1,4 +1,5 @@
 const { merge } = require('webpack-merge')
+const { stringifyJSON } = require('confbox')
 
 const { AppBuilder } = require('../../app-builder.js')
 const { quasarSsrConfig } = require('./ssr-config.js')
@@ -20,7 +21,10 @@ module.exports.QuasarModeBuilder = class QuasarModeBuilder extends AppBuilder {
     await this.#writePackageJson()
 
     // also update pwa-builder.js when changing here
-    if (this.quasarConf.pwa.workboxMode === 'InjectManifest') {
+    if (
+      this.quasarConf.ssr.pwa === true
+      && this.quasarConf.pwa.workboxMode === 'InjectManifest'
+    ) {
       const esbuildConfig = await quasarSsrConfig.customSw(this.quasarConf)
       await this.buildWithEsbuild('InjectManifest Custom SW', esbuildConfig)
     }
@@ -67,7 +71,8 @@ module.exports.QuasarModeBuilder = class QuasarModeBuilder extends AppBuilder {
       author: localAppPkg.author,
       private: true,
       type: 'commonjs',
-      module: 'index.js',
+      main: 'index.mjs',
+      module: 'index.mjs',
       scripts: {
         start: 'node index.mjs'
       },
@@ -88,7 +93,7 @@ module.exports.QuasarModeBuilder = class QuasarModeBuilder extends AppBuilder {
       this.quasarConf.ssr.extendPackageJson(pkg)
     }
 
-    this.writeFile('package.json', JSON.stringify(pkg, null, 2))
+    this.writeFile('package.json', stringifyJSON(pkg, { indent: 2 }))
   }
 
   async #writeRenderTemplate () {

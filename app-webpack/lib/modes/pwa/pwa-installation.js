@@ -1,8 +1,7 @@
-const fs = require('node:fs')
 const fse = require('fs-extra')
 
 const { log, warn } = require('../../utils/logger.js')
-const { generateTypesFeatureFlag } = require('../../utils/types-feature-flags.js')
+const { isModeInstalled } = require('../modes-utils.js')
 
 const pwaDevDeps = {
   'workbox-webpack-plugin': '^7.0.0'
@@ -12,16 +11,11 @@ const pwaDeps = {
   'register-service-worker': '^1.7.2'
 }
 
-function isModeInstalled (appPaths) {
-  return fs.existsSync(appPaths.pwaDir)
-}
-module.exports.isModeInstalled = isModeInstalled
-
 module.exports.addMode = function addMode ({
   ctx: { appPaths, cacheProxy },
   silent
 }) {
-  if (isModeInstalled(appPaths)) {
+  if (isModeInstalled(appPaths, 'pwa')) {
     if (silent !== true) {
       warn('PWA support detected already. Aborting.')
     }
@@ -42,7 +36,7 @@ module.exports.addMode = function addMode ({
 
   const hasTypescript = cacheProxy.getModule('hasTypescript')
   const { hasEslint } = cacheProxy.getModule('eslint')
-  const format = hasTypescript ? 'ts' : 'default'
+  const format = hasTypescript ? 'ts' : 'js'
 
   fse.copySync(
     appPaths.resolve.cli(`templates/pwa/${ format }`),
@@ -50,8 +44,6 @@ module.exports.addMode = function addMode ({
     // Copy .eslintrc.js only if the app has ESLint
     hasEslint === true ? { filter: src => !src.endsWith('/.eslintrc.cjs') } : void 0
   )
-
-  generateTypesFeatureFlag('pwa', appPaths)
 
   log('Copying PWA icons to /public/icons/ (if they are not already there)...')
   fse.copySync(
@@ -66,7 +58,7 @@ module.exports.addMode = function addMode ({
 module.exports.removeMode = function removeMode ({
   ctx: { appPaths, cacheProxy }
 }) {
-  if (!isModeInstalled(appPaths)) {
+  if (isModeInstalled(appPaths, 'pwa') === false) {
     warn('No PWA support detected. Aborting.')
     return
   }

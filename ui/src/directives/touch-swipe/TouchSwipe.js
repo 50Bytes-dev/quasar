@@ -29,9 +29,10 @@ export default createDirective(__QUASAR_SSR_SERVER__
 
       beforeMount (el, { value, arg, modifiers }) {
         // early return, we don't need to do anything
-        if (modifiers.mouse !== true && client.has.touch !== true) {
-          return
-        }
+        if (
+          modifiers.mouse !== true
+          && client.has.touch !== true
+        ) return
 
         const mouseCapture = modifiers.mouseCapture === true ? 'Capture' : ''
 
@@ -79,9 +80,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           },
 
           move (evt) {
-            if (ctx.event === void 0) {
-              return
-            }
+            if (ctx.event === void 0) return
 
             if (ctx.event.dir !== false) {
               stopAndPrevent(evt)
@@ -90,9 +89,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
 
             const time = Date.now() - ctx.event.time
 
-            if (time === 0) {
-              return
-            }
+            if (time === 0) return
 
             const
               pos = position(evt),
@@ -220,14 +217,12 @@ export default createDirective(__QUASAR_SSR_SERVER__
           },
 
           end (evt) {
-            if (ctx.event === void 0) {
-              return
-            }
+            if (ctx.event === void 0) return
 
             cleanEvt(ctx, 'temp')
             client.is.firefox === true && preventDraggable(el, false)
-            ctx.styleCleanup !== void 0 && ctx.styleCleanup(true)
-            evt !== void 0 && ctx.event.dir !== false && stopAndPrevent(evt)
+            ctx.styleCleanup?.(true)
+            if ((evt !== void 0) && (ctx.event.dir !== false)) stopAndPrevent(evt)
 
             ctx.event = void 0
           }
@@ -273,7 +268,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
           cleanEvt(ctx, 'temp')
 
           client.is.firefox === true && preventDraggable(el, false)
-          ctx.styleCleanup !== void 0 && ctx.styleCleanup()
+          ctx.styleCleanup?.()
 
           delete el.__qtouchswipe
         }

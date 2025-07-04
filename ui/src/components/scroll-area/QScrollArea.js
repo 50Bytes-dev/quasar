@@ -294,9 +294,7 @@ export default createComponent({
       const data = scroll[ axis ]
 
       if (e.isFirst === true) {
-        if (data.thumbHidden.value === true) {
-          return
-        }
+        if (data.thumbHidden.value === true) return
 
         panRefPos = data.position.value
         panning.value = true

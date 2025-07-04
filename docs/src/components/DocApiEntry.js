@@ -1,7 +1,7 @@
 import { h, ref } from 'vue'
 import { QBadge, QBtn, Notify, QBtnToggle } from 'quasar'
 import { copyToClipboard } from 'assets/page-utils.js'
-import { mdiMinusBox, mdiPlusBox } from '@quasar/extras/mdi-v6'
+import { mdiMinusBox, mdiPlusBox } from '@quasar/extras/mdi-v7'
 
 function copyPropName (propName) {
   copyToClipboard(propName)
@@ -279,9 +279,11 @@ function getPropDetails (openState, masterKey, prop, level) {
 
 function getProp (openState, masterKey, prop, propName, level, onlyChildren) {
   const configToggle = useConfigToggle(openState)
-  if (configToggle.enabled && configToggle.type === 'configFile' && prop.configFileType === null) {
-    return
-  }
+  if (
+    configToggle.enabled
+    && configToggle.type === 'configFile'
+    && prop.configFileType === null
+  ) return
 
   const rawType = configToggle.enabled
     ? configToggle.type === 'configFile'

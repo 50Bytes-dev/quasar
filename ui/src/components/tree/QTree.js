@@ -320,9 +320,7 @@ export default createComponent({
 
     function setExpanded (key, state, node = getNodeByKey(key), m = meta.value[ key ]) {
       if (m.lazy && m.lazy !== 'loaded') {
-        if (m.lazy === 'loading') {
-          return
-        }
+        if (m.lazy === 'loading') return
 
         lazy.value[ key ] = 'loading'
         if (Array.isArray(node[ props.childrenKey ]) !== true) {
@@ -336,7 +334,7 @@ export default createComponent({
             node[ props.childrenKey ] = Array.isArray(children) === true ? children : []
             nextTick(() => {
               const localMeta = meta.value[ key ]
-              if (localMeta && localMeta.isParent === true) {
+              if (localMeta?.isParent === true) {
                 localSetExpanded(key, true)
               }
             })
@@ -629,8 +627,7 @@ export default createComponent({
     }
 
     function blur (key) {
-      const blurTarget = blurTargets[ key ]
-      blurTarget && blurTarget.focus()
+      blurTargets[ key ]?.focus()
     }
 
     function onClick (node, meta, e, keyboard) {

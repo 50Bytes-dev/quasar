@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Th1_Th2_Th3_Th4_Th5_Th6_Th7_Th8_Th9_Th10_Th11_Th12'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: 'ngày'
+    pluralDay: 'ngày',
+    prevMonth: 'Tháng trước',
+    nextMonth: 'Tháng sau',
+    prevYear: 'Năm trước',
+    nextYear: 'Năm sau',
+    today: 'Hôm nay',
+    prevRangeYears: range => `Trước ${ range } năm`,
+    nextRangeYears: range => `Tiếp theo ${ range } năm`
   },
   table: {
     noData: 'Không có dữ liệu',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Tất cả',
     pagination: (start, end, total) => start + '-' + end + ' của ' + total,
     columns: 'Cột'
+  },
+  pagination: {
+    first: 'Trang đầu tiên',
+    prev: 'Trang trước',
+    next: 'Trang tiếp theo',
+    last: 'Trang cuối cùng'
   },
   editor: {
     url: 'URL',

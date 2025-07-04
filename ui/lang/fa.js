@@ -30,7 +30,14 @@ export default {
     headerTitle: (date, model) => `${ days[ date.getDay() ] }، ${ model.day } ${ monthsShort[ model.month - 1 ] }`,
     firstDayOfWeek: 6,
     format24h: true,
-    pluralDay: 'روز'
+    pluralDay: 'روز',
+    prevMonth: 'ماه قبل',
+    nextMonth: 'ماه بعد',
+    prevYear: 'سال قبل',
+    nextYear: 'سال دیگر',
+    today: 'امروز',
+    prevRangeYears: range => `قبلی ${ range } سال`,
+    nextRangeYears: range => `بعد ${ range } سالها`
   },
   table: {
     noData: 'اطلاعاتی موجود نیست',
@@ -41,6 +48,12 @@ export default {
     allRows: 'همه',
     pagination: (start, end, total) => start + '-' + end + ' از ' + total,
     columns: 'ستون'
+  },
+  pagination: {
+    first: 'صفحه اول',
+    prev: 'صفحه قبلی',
+    next: 'صفحه بعدی',
+    last: 'صفحه آخر'
   },
   editor: {
     url: 'آدرس',

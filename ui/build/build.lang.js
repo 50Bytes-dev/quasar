@@ -1,4 +1,4 @@
-import glob from 'fast-glob'
+import { globSync } from 'tinyglobby'
 import fse from 'fs-extra'
 
 import { rootFolder, resolveToRoot, logError, writeFileIfChanged } from './build.utils.js'
@@ -21,7 +21,7 @@ export function generate () {
   const languages = []
   const promises = []
   try {
-    glob.sync('lang/*.js', { cwd: rootFolder, absolute: true })
+    globSync('lang/*.js', { cwd: rootFolder, absolute: true })
       .forEach(file => {
         const content = fse.readFileSync(file, 'utf-8')
         languages.push({

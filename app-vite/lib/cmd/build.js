@@ -7,7 +7,7 @@ import parseArgs from 'minimist'
 const argv = parseArgs(process.argv.slice(2), {
   alias: {
     m: 'mode',
-    T: 'target',
+    T: 'target', // cordova/capacitor/bex mode only
     A: 'arch',
     b: 'bundler',
     s: 'skip-pkg',
@@ -57,6 +57,8 @@ if (argv.help) {
                         [darwin|win32|linux|mas|all]
                       - Electron with "electron-builder" bundler (default: yours)
                         [darwin|mac|win32|win|linux|all]
+                      - Bex
+                        [chrome|firefox]
     --publish, -P   Also trigger publishing hooks (if any are specified)
                       - Has special meaning when building with Electron mode and using
                         electron-builder as bundler
@@ -83,6 +85,9 @@ if (argv.help) {
     ONLY for electron-builder (when using "publish" parameter):
     --publish, -P  Publish options [onTag|onTagOrDraft|always|never]
                      - see https://www.electron.build/configuration/publish
+
+    Only for BEX mode:
+    --target, -T     (required) Browser family target [chrome|firefox]
 
   `)
   process.exit(0)
@@ -132,9 +137,6 @@ await quasarConfFile.init()
 
 const quasarConf = await quasarConfFile.read()
 
-const { ensureTypesFeatureFlags } = await import('../utils/types-feature-flags.js')
-ensureTypesFeatureFlags(quasarConf)
-
 const { QuasarModeBuilder } = await import(`../modes/${ argv.mode }/${ argv.mode }-builder.js`)
 const appBuilder = new QuasarModeBuilder({ argv, quasarConf })
 
@@ -145,6 +147,9 @@ fse.removeSync(outputFolder)
 const { EntryFilesGenerator } = await import('../entry-files-generator.js')
 const entryFiles = new EntryFilesGenerator(ctx)
 entryFiles.generate(quasarConf)
+
+const { generateTypes } = await import('../types-generator.js')
+generateTypes(quasarConf)
 
 if (typeof quasarConf.build.beforeBuild === 'function') {
   await quasarConf.build.beforeBuild({ quasarConf })
@@ -163,8 +168,17 @@ appBuilder.build()
   })
   .then(async signal => {
     if (signal !== void 0) {
-      const { SIGNAL__BUILD_SHOULD_EXIT } = await import('../utils/signals.js')
-      if (signal === SIGNAL__BUILD_SHOULD_EXIT) return
+      const { SIGNALS } = await import('../utils/signals.js')
+      if (signal === SIGNALS.BUILD_EXTERNAL_TOOL_SPAWNED) {
+        const { platform } = await import('node:process')
+
+        // We simply return and let Windows be able to
+        // spawn the external tool (requires extra time)
+        if (platform === 'win32') return
+        // Otherwise, we force exit the process.
+        // See process.exit(0) at the end of this then() for the explanation.
+        else process.exit(0)
+      }
     }
 
     if (argv.mode === 'cordova') {
@@ -208,4 +222,11 @@ appBuilder.build()
         await hook.fn(hook.api, opts)
       })
     }
+
+    /**
+     * We're done, but there may be some underlying tools which
+     * haven't freed up the Node's JS execution stack yet (like esbuild or Vite).
+     * So, we're forcing the process to exit to avoid losing time.
+     */
+    process.exit(0)
   })

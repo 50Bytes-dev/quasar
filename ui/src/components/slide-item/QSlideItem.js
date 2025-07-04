@@ -134,9 +134,10 @@ export default createComponent({
         dist = evt.distance.y
       }
 
-      if (pan.dir !== null && Math.abs(dir) !== Math.abs(pan.dir)) {
-        return
-      }
+      if (
+        pan.dir !== null
+        && Math.abs(dir) !== Math.abs(pan.dir)
+      ) return
 
       if (pan.dir !== dir) {
         [ 'left', 'right', 'top', 'bottom' ].forEach(d => {

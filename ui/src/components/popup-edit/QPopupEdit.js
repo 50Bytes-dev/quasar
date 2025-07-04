@@ -68,9 +68,7 @@ export default createComponent({
     })
 
     function set () {
-      if (props.validate(currentModel.value) === false) {
-        return
-      }
+      if (props.validate(currentModel.value) === false) return
 
       if (hasModelChanged() === true) {
         emit('save', currentModel.value, initialValue.value)
@@ -165,8 +163,8 @@ export default createComponent({
     Object.assign(proxy, {
       set,
       cancel,
-      show (e) { menuRef.value !== null && menuRef.value.show(e) },
-      hide (e) { menuRef.value !== null && menuRef.value.hide(e) },
+      show (e) { menuRef.value?.show(e) },
+      hide (e) { menuRef.value?.hide(e) },
       updatePosition
     })
 

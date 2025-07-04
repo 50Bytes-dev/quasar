@@ -6,13 +6,18 @@ import { spawn, execSync as exec } from 'node:child_process'
 import { emptyDirSync, ensureDirSync, ensureFileSync, copySync } from 'fs-extra/esm'
 import promptUser from 'prompts'
 import compileTemplate from 'lodash/template.js'
-import fglob from 'fast-glob'
+import { globSync } from 'tinyglobby'
 import { yellow, green } from 'kolorist'
 
 import logger from './logger.js'
 
 const TEMPLATING_FILE_EXTENSIONS = [ '', '.json', '.js', '.cjs', '.ts', '.vue', '.md', '.html', '.sass' ]
 
+/**
+ * @param {Record<string, any>} scope
+ * @param {promptUser.PromptObject[]} questions
+ * @param {promptUser.Options} opts
+ */
 async function prompts (scope, questions, opts) {
   const options = opts || {
     onCancel: () => {
@@ -43,10 +48,12 @@ function convertArrayToObject (arr) {
 
 const runningPackageManager = (() => {
   const userAgent = process.env.npm_config_user_agent
-
-  if (userAgent) {
-    return userAgent.split(' ')[ 0 ].split('/')[ 0 ]
+  if (!userAgent) {
+    return
   }
+
+  const [ name, version ] = userAgent.split(' ')[ 0 ].split('/')
+  return { name, version }
 })()
 
 function getCallerPath () {
@@ -64,7 +71,7 @@ function getCallerPath () {
 
 function renderTemplate (relativePath, scope) {
   const templateDir = join(getCallerPath(), relativePath)
-  const files = fglob.sync([ '**/*' ], { cwd: templateDir })
+  const files = globSync([ '**/*' ], { cwd: templateDir })
 
   for (const rawPath of files) {
     const targetRelativePath = rawPath.split('/').map(name => {
@@ -89,10 +96,15 @@ function renderTemplate (relativePath, scope) {
       const rawContent = readFileSync(sourcePath, 'utf-8')
       const template = compileTemplate(rawContent, { interpolate: /<%=([\s\S]+?)%>/g })
 
-      const newContent = extension === '.json'
-        // This prevents us to add comments into JSONC files, like tsconfig ones
-        ? JSON.stringify(JSON.parse(template(scope)), null, 2)
-        : template(scope)
+      let newContent = template(scope)
+      if (extension === '.json') {
+        try {
+          // try to format the JSON
+          newContent = JSON.stringify(JSON.parse(newContent), null, 2)
+        } catch {
+          // noop, the JSON might be containing comments, leave it unformatted
+        }
+      }
 
       writeFileSync(targetPath, newContent, 'utf-8')
     }
@@ -129,7 +141,7 @@ function getGitUser () {
     name = exec('git config --get user.name')
     email = exec('git config --get user.email')
   }
-  catch (e) {}
+  catch (_) {}
 
   name = name && JSON.stringify(name.toString().trim()).slice(1, -1)
   email = email && (' <' + email.toString().trim() + '>')
@@ -222,6 +234,14 @@ function lintFolder (scope) {
   )
 }
 
+function formatFolder (scope) {
+  return runCommand(
+    scope.packageManager,
+    [ 'run', 'format' ],
+    { cwd: scope.projectFolder }
+  )
+}
+
 function hasGit () {
   try {
     exec('git --version')
@@ -254,7 +274,7 @@ function initializeGit (projectFolder) {
     exec('git add -A', { cwd: projectFolder })
     exec('git commit -m "Initialize the project 🚀" --no-verify', { cwd: projectFolder })
   }
-  catch (e) {
+  catch (_) {
     logger.warn('Could not initialize Git repository. Please do this manually.')
     return
   }
@@ -285,24 +305,12 @@ function ensureOutsideProject () {
   }
 }
 
-const QUASAR_VERSIONS = [
-  { title: 'Quasar v2 (Vue 3 | latest and greatest)', value: 'v2', description: 'recommended' },
-  { title: 'Quasar v1 (Vue 2)', value: 'v1' }
-]
 const SCRIPT_TYPES = [
   { title: 'Javascript', value: 'js' },
   { title: 'Typescript', value: 'ts' }
 ]
 
 const commonPrompts = {
-  quasarVersion: {
-    type: 'select',
-    name: 'quasarVersion',
-    message: 'Pick Quasar version:',
-    initial: 0,
-    choices: QUASAR_VERSIONS
-  },
-
   scriptType: {
     type: 'select',
     name: 'scriptType',
@@ -330,41 +338,29 @@ const commonPrompts = {
       val.length > 0 || 'Invalid project description'
   },
 
-  author: {
-    type: 'text',
-    name: 'author',
-    initial: () => getGitUser(),
-    message: 'Author:'
-  },
-
   license: {
     type: 'text',
     name: 'license',
     message: 'License type',
     initial: 'MIT'
-  },
-
-  repositoryType: {
-    type: 'text',
-    name: 'repositoryType',
-    message: 'Repository type:',
-    initial: 'git'
-  },
-  repositoryURL: {
-    type: 'text',
-    name: 'repositoryURL',
-    message: 'Repository URL: (eg https://github.com/quasarframework/quasar)'
-  },
-  homepage: {
-    type: 'text',
-    name: 'homepage',
-    message: 'Homepage URL:'
-  },
-  bugs: {
-    type: 'text',
-    name: 'bugs',
-    message: 'Issue reporting URL: (eg https://github.com/quasarframework/quasar/issues)'
   }
+}
+
+export async function injectAuthor (scope) {
+  const author = getGitUser()
+
+  if (author) {
+    scope.author = author
+    return
+  }
+
+  await prompts(scope, [
+    {
+      type: 'text',
+      name: 'author',
+      message: 'Author:'
+    }
+  ])
 }
 
 export default {
@@ -381,8 +377,10 @@ export default {
   printFinalMessage,
   installDeps,
   lintFolder,
+  formatFolder,
   ensureOutsideProject,
   initializeGit,
 
-  commonPrompts
+  commonPrompts,
+  injectAuthor
 }

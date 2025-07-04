@@ -66,16 +66,39 @@ function getRedirectUrl (url, router) {
   return url
 }
 
+function getUrlPath(ssrContext) {
+  <% /* In case the `req.url` is not available or different due to a custom webserver, also check for `ssrContext.url` */ %>
+  const url = ssrContext.url || ssrContext.req.url
+
+  try {
+    <% /* Fetch API's Request.url, used by more modern web servers and runtime environments. Contains the full URL */ %>
+    const parsedUrl = new URL(url)
+    return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash
+  } catch {
+    <% /* Node IncomingMessage.url, used by Express and similar. It doesn't contain the protocol and host, only the path, so new URL(url) above would fail */ %>
+    return url
+  }
+}
+
 const { components, directives, ...qUserOptions } = quasarUserOptions
 
 <%
   const bootEntries = boot.filter(asset => asset.server !== false)
   if (bootEntries.length !== 0) { %>
-const bootFiles = Promise.all([
+let bootFunctions = null
+let bootFiles = Promise.allSettled([
   <% bootEntries.forEach((asset, index) => { %>
   import(/* webpackMode: "eager" */ '<%= asset.path %>')<%= index < bootEntries.length - 1 ? ',' : '' %>
   <% }) %>
-]).then(bootFiles => bootFiles.map(entry => entry.default).filter(entry => typeof entry === 'function'))
+])
+.then(bootFiles => bootFiles.map(result => {
+  if (result.status === 'rejected') {
+    console.error('[Quasar] boot error:', result.reason)
+    return
+  }
+  return result.value.default
+}))
+.then(bootFiles => bootFiles.filter(entry => typeof entry === 'function'))
 <% } %>
 
 // This is where we perform data-prefetching to determine the
@@ -85,11 +108,14 @@ const bootFiles = Promise.all([
 export default ssrContext => {
   return new Promise(async (resolve, reject) => {
     <% if (bootEntries.length !== 0) { %>
-    const bootFunctions = await bootFiles
+    if (bootFunctions === null) {
+      bootFunctions = await bootFiles
+      bootFiles = null
+    }
     <% } %>
 
     const {
-      app, router<%= metaConf.hasStore ? ', store' + (metaConf.storePackage === 'vuex' ? ', storeKey' : '') : '' %>
+      app, router<%= metaConf.hasStore ? ', store' : '' %>
     } = await createQuasarApp(createApp, qUserOptions, ssrContext)
 
     <% if (bootEntries.length !== 0) { %>
@@ -107,7 +133,7 @@ export default ssrContext => {
           <%= metaConf.hasStore ? 'store,' : '' %>
           ssrContext,
           redirect,
-          urlPath: ssrContext.req.url,
+          urlPath: getUrlPath(ssrContext),
           publicPath
         })
       }
@@ -117,23 +143,20 @@ export default ssrContext => {
       }
     }
 
-    if (hasRedirected === true) {
-      return
-    }
+    if (hasRedirected === true) return
     <% } %>
 
     app.use(router)
-    <% if (metaConf.hasStore && metaConf.storePackage === 'vuex') { %>app.use(store, storeKey)<% } %>
 
-    const url = ssrContext.req.url<% if (build.publicPath !== '/') { %>.replace(publicPath, '/')<% } %>
-    const { fullPath } = router.resolve(url)
+    const urlPath = getUrlPath(ssrContext)<% if (build.publicPath !== '/') { %>.replace(publicPath, '/')<% } %>
+    const { fullPath } = router.resolve(urlPath)
 
-    if (fullPath !== url) {
+    if (fullPath !== urlPath) {
       return reject({ url: <%= build.publicPath === '/' ? 'fullPath' : 'addPublicPath(fullPath)' %> })
     }
 
     // set router's location
-    router.push(url).catch(() => {})
+    router.push(urlPath).catch(() => {})
 
     // wait until router has resolved possible async hooks
     router.isReady().then(() => {
@@ -177,13 +200,13 @@ export default ssrContext => {
           ssrContext,
           currentRoute: router.currentRoute.value,
           redirect,
-          urlPath: ssrContext.req.url,
+          urlPath: getUrlPath(ssrContext),
           publicPath
         })),
         Promise.resolve()
       )
       .then(() => {
-        if (hasRedirected === true) { return }
+        if (hasRedirected === true) return
 
         <% if (metaConf.hasStore && ssr.manualStoreSsrContextInjection !== true) { %>ssrContext.state = unref(store.state)<% } %>
 

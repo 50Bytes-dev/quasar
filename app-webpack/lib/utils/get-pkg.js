@@ -1,4 +1,5 @@
 const { readFileSync, statSync } = require('node:fs')
+const { parseJSON } = require('confbox')
 
 const { warning } = require('./logger.js')
 const { getPackageJson } = require('../utils/get-package-json.js')
@@ -16,7 +17,8 @@ module.exports.getPkg = function getPkg (appPaths) {
     if (mtime !== lastAppPkgModifiedTime) {
       lastAppPkgModifiedTime = mtime
       try {
-        appPkg = JSON.parse(
+        // This may get updated and written, so use parseJSON to preserve formatting
+        appPkg = parseJSON(
           readFileSync(appPkgPath, 'utf-8')
         )
       }

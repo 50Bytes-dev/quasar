@@ -5,12 +5,12 @@ related:
   - /quasar-cli-webpack/quasar-config-file
 ---
 
-The SSR middleware files fulfill one special purpose: they prepare the Nodejs server that runs your SSR app with additional functionality (Expressjs compatible middleware).
+The SSR middleware files fulfill one special purpose: they prepare the Nodejs server that runs your SSR app with additional functionality (Express compatible middleware).
 
 With SSR middleware files, it is possible to split the middleware logic into self-contained, easy to maintain files. It is also trivial to disable any of the SSR middleware files or even contextually determine which of the SSR middleware files get into the build through the `/quasar.config` file configuration.
 
 ::: tip
-For more advanced usage, you will need to get acquainted to the [Expressjs API](https://expressjs.com/en/4x/api.html).
+For more advanced usage, you will need to get acquainted to the [Express API](https://expressjs.com/en/4x/api.html).
 :::
 
 ::: warning
@@ -19,14 +19,22 @@ You will need at least one SSR middleware file which handles the rendering of th
 
 ## Anatomy of a middleware file
 
-A SSR middleware file is a simple JavaScript file which exports a function. Quasar will then call the exported function when it prepares the Nodejs server (Expressjs) app and additionally pass an Object as param (which will be detailed in the next section).
+A SSR middleware file is a simple JavaScript file which exports a function. Quasar will then call the exported function when it prepares the Nodejs server (Express) app and additionally pass an Object as param (which will be detailed in the next section).
 
 ```js
-// import something here
+import { defineSsrMiddleware } from '#q-app/wrappers'
 
-export default ({ app, resolve, publicPath, folders, render, serve }) => {
+export default defineSsrMiddleware(({
+  app,
+  port,
+  resolve,
+  publicPath,
+  folders,
+  render,
+  serve
+}) => {
   // something to do with the server "app"
-}
+})
 ```
 
 The SSR middleware files can also be async:
@@ -34,22 +42,13 @@ The SSR middleware files can also be async:
 ```js
 // import something here
 
-export default async ({ app, resolve, publicPath, folders, render, serve }) => {
+export default defineSsrMiddleware(async ({ app, port, resolve, publicPath, folders, render, serve }) => {
   // something to do with the server "app"
-  await something()
-}
-```
-
-You can wrap the returned function with `ssrMiddleware` helper to get a better IDE autocomplete experience (through Typescript):
-
-```js
-import { ssrMiddleware } from 'quasar/wrappers'
-
-export default ssrMiddleware(async ({ app, resolve, publicPath, folders, render, serve }) => {
-  // something to do
   await something()
 })
 ```
+
+Notice the `defineSsrMiddleware` import. It is essentially a no-op function, but it helps with the IDE autocomplete.
 
 Notice we are using the [ES6 destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment). Only assign what you actually need/use.
 
@@ -58,35 +57,40 @@ Notice we are using the [ES6 destructuring assignment](https://developer.mozilla
 We are referring here to the Object received as parameter by the default exported function of the SSR middleware file.
 
 ```js
-export default ({ app, resolve, publicPath, folders, render, serve }) => {
+export default defineSsrMiddleware(({ app, port, resolve, publicPath, folders, render, serve }) => {
 ```
 
 Detailing the Object:
 
 ```js
 {
-  app, // Expressjs app instance
+  app, // Express app or whatever is returned from src-ssr/server -> create()
+  port, // on dev: devServer port; on prod: process.env.PORT or quasar.config > ssr > prodPort
   resolve: {
-    urlPath(path)
-    root(arg1, arg2),
-    public(arg1, arg2)
+    urlPath, // (url) => path string with publicPath ensured to be included,
+    root, // (pathPart1, ...pathPartN) => path string (joins to the root folder),
+    public // (pathPart1, ...pathPartN) => path string (joins to the public folder)
   },
-  publicPath, // String
+  publicPath, // string
   folders: {
-    root,     // String
-    public    // String
+    root, // path string of the root folder
+    public // path string of the public folder
   },
-  render(ssrContext),
+  render, // (ssrContext) => html string
   serve: {
-    static(path, opts),
-    error({ err, req, res })
+    static, // ({ urlPath = '/', pathToServe = '.', opts = {} }) => void (OR whatever returned by src-ssr/server -> serveStaticContent())
+    error // DEV only; ({ err, req, res }) => void
   }
 }
 ```
 
 #### app
 
-This is the Expressjs app instance. The "bread and butter" of any middleware since you'll be using it to configure the webserver.
+This is the Node.js app instance. The "bread and butter" of any middleware since you'll be using it to configure the webserver.
+
+#### port
+
+The configured port for the Node.js webserver.
 
 #### resolve
 
@@ -126,13 +130,11 @@ serve.static():
   * `opts.maxAge` is used by default, taking into account the quasar.config file > ssr > maxAge configuration; this sets how long the respective file(s) can live in browser's cache
 
   ```js
-  serve.static('my-file.json')
+  serve.static({ urlPath: '/my-file.json', pathToServe: '.', opts = {} })
 
   // is equivalent to:
 
-  express.static(resolve.public('my-file.json'), {
-    maxAge: ... // quasar.config file > ssr > maxAge
-  })
+  express.static(resolve.public('my-file.json'), {})
   ```
 
 serve.error():
@@ -158,7 +160,7 @@ This command creates a new file: `/src-ssr/middlewares/<name>.js` with the follo
 
 // "async" is optional!
 // remove it if you don't need it
-export default async ({ app, resolveUrlPath, publicPath, folders, render }) => {
+export default async ({ app, port, resolveUrlPath, publicPath, folders, render, serve }) => {
   // something to do with the server "app"
 }
 ```
@@ -168,16 +170,16 @@ You can also return a Promise:
 ```js
 // import something here
 
-export default ({ app, resolve, publicPath, folders, render, serve }) => {
+export default defineSsrMiddleware(({ app, port, resolve, publicPath, folders, render, serve }) => {
   return new Promise((resolve, reject) => {
     // something to do with the server "app"
   })
-}
+})
 ```
 
 You can now add content to that file depending on the intended use of your SSR middleware file.
 
-The last step is to tell Quasar to use your new SSR middleware file. For this to happen you need to add the file in the `/quasar.config` file
+The last step is to tell Quasar to use your new SSR middleware file. For this to happen you need to add the file in the `/quasar.config` file:
 
 ```js /quasar.config file
 ssr: {
@@ -236,7 +238,7 @@ ssr: {
 
 Now let's see what it contains:
 
-```js /src-ssr/middlewares/render.js
+```js src-ssr/middlewares/render.js
 // This middleware should execute as last one
 // since it captures everything and tries to
 // render the page with Vue
@@ -286,6 +288,10 @@ export default ({ app, resolve, render, serve }) => {
           // Render Error Page on production or
           // create a route (/src/routes) for an error page and redirect to it
           res.status(500).send('500 | Internal Server Error')
+
+          if (process.env.DEBUGGING) {
+            console.error(err.stack)
+          }
         }
       })
   })
@@ -296,37 +302,23 @@ Notice the `render` parameter (from the above code sample) that the exported fun
 
 ## Hot Module Reload
 
-While developing, whenever you change anything in the SSR middlewares, Quasar App CLI will automatically trigger a recompilation of client-side resources and apply the middleware changes to the Nodejs server (Expressjs).
+While developing, whenever you change anything in the SSR middlewares, Quasar App CLI will automatically trigger a recompilation of client-side resources and apply the middleware changes to the Nodejs server (Express).
 
 ## Examples of SSR middleware
 
 ::: tip
-You can use any Expressjs compatible middleware.
+You can use any connect API compatible middleware.
 :::
-
-### Compression
-
-This one makes sense to use it for production only.
-
-```js
-import compression from 'compression'
-
-export default ({ app }) => {
-  app.use(
-    compression({ threshold: 0 })
-  )
-}
-```
 
 ### Logger / Interceptor
 
 The order in which the SSR middlewares are applied matters. So it might be wise to set the following one as the first (in quasar.config file > ssr > middlewares) so that it will be able to intercept all client requests.
 
 ```js
-export default ({ app, resolve }) => {
+export default defineSsrMiddleware(({ app, resolve }) => {
   app.all(resolve.urlPath('*'), (req, _, next) => {
     console.log('someone requested:', req.url)
     next()
   })
-}
+})
 ```

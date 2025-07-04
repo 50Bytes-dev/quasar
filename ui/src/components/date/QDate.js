@@ -434,9 +434,7 @@ export default createComponent({
     })
 
     const rangeView = computed(() => {
-      if (editRange.value === null) {
-        return
-      }
+      if (editRange.value === null) return
 
       const { init, initHash, final, finalHash } = editRange.value
 
@@ -447,9 +445,10 @@ export default createComponent({
       const fromHash = getMonthHash(from)
       const toHash = getMonthHash(to)
 
-      if (fromHash !== viewMonthHash.value && toHash !== viewMonthHash.value) {
-        return
-      }
+      if (
+        fromHash !== viewMonthHash.value
+        && toHash !== viewMonthHash.value
+      ) return
 
       const view = {}
 
@@ -704,7 +703,7 @@ export default createComponent({
     ))
 
     watch(() => props.modelValue, v => {
-      if (lastEmitValue === v) {
+      if (lastEmitValue === JSON.stringify(v)) {
         lastEmitValue = 0
       }
       else {
@@ -732,6 +731,10 @@ export default createComponent({
       updateValue(innerMask.value, val, 'locale')
       innerLocale.value = val
     })
+
+    function setLastValue (v) {
+      lastEmitValue = JSON.stringify(v)
+    }
 
     function setToday () {
       const { year, month, day } = today.value
@@ -903,7 +906,7 @@ export default createComponent({
 
     function toggleDate (date, monthHash) {
       const month = daysMap.value[ monthHash ]
-      const fn = month !== void 0 && month.includes(date.day) === true
+      const fn = month?.includes(date.day) === true
         ? removeFromModel
         : addToModel
 
@@ -959,9 +962,9 @@ export default createComponent({
         ? val[ 0 ]
         : val
 
-      lastEmitValue = value
-
       const { reason, details } = getEmitParams(action, date)
+
+      setLastValue(value)
       emit('update:modelValue', value, reason, details)
     }
 
@@ -982,9 +985,9 @@ export default createComponent({
         date.day = Math.min(Math.max(1, date.day), maxDay)
 
         const value = encodeEntry(date)
-        lastEmitValue = value
-
         const { details } = getEmitParams('', date)
+
+        setLastValue(value)
         emit('update:modelValue', value, reason, details)
       })
     }
@@ -1043,9 +1046,7 @@ export default createComponent({
     }
 
     function removeFromModel (date) {
-      if (props.noUnset === true) {
-        return
-      }
+      if (props.noUnset === true) return
 
       let model = null
 
@@ -1083,7 +1084,10 @@ export default createComponent({
             : entry.dateHash !== null
         })
 
-      emit('update:modelValue', (props.multiple === true ? model : model[ 0 ]) || null, reason)
+      const value = (props.multiple === true ? model : model[ 0 ]) || null
+
+      setLastValue(value)
+      emit('update:modelValue', value, reason)
     }
 
     function getHeader () {
@@ -1132,6 +1136,7 @@ export default createComponent({
           props.todayBtn === true ? h(QBtn, {
             class: 'q-date__header-today self-start',
             icon: $q.iconSet.datetime.today,
+            'aria-label': $q.lang.date.today,
             flat: true,
             size: 'sm',
             round: true,
@@ -1153,6 +1158,7 @@ export default createComponent({
             size: 'sm',
             flat: true,
             icon: dateArrow.value[ 0 ],
+            'aria-label': type === 'Years' ? $q.lang.date.prevYear : $q.lang.date.prevMonth,
             tabindex: tabindex.value,
             disable: boundaries.prev === false,
             ...getCache('go-#' + type, { onClick () { goTo(-1) } })
@@ -1185,6 +1191,7 @@ export default createComponent({
             size: 'sm',
             flat: true,
             icon: dateArrow.value[ 1 ],
+            'aria-label': type === 'Years' ? $q.lang.date.nextYear : $q.lang.date.nextMonth,
             tabindex: tabindex.value,
             disable: boundaries.next === false,
             ...getCache('go+#' + type, { onClick () { goTo(1) } })
@@ -1355,6 +1362,7 @@ export default createComponent({
               dense: true,
               flat: true,
               icon: dateArrow.value[ 0 ],
+              'aria-label': $q.lang.date.prevRangeYears(yearsInterval),
               tabindex: tabindex.value,
               disable: isDisabled(start),
               ...getCache('y-', { onClick: () => { startYear.value -= yearsInterval } })
@@ -1373,6 +1381,7 @@ export default createComponent({
               dense: true,
               flat: true,
               icon: dateArrow.value[ 1 ],
+              'aria-label': $q.lang.date.nextRangeYears(yearsInterval),
               tabindex: tabindex.value,
               disable: isDisabled(stop),
               ...getCache('y+', { onClick: () => { startYear.value += yearsInterval } })

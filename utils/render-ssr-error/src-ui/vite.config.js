@@ -25,7 +25,8 @@ export default defineConfig(() => {
       vitePluginChecker({
         root: resolve('../'),
         eslint: {
-          lintCommand: 'eslint --report-unused-disable-directives "./**/*.{js,mjs,cjs,vue}"'
+          lintCommand: 'eslint "./**/*.{js,mjs,cjs,vue}"',
+          useFlatConfig: true
         }
       }),
 

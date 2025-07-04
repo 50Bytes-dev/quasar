@@ -50,8 +50,13 @@ export default defineConfig(() => {
       },
       // browser: {
       //   enabled: true,
+      //   provider: 'playwright',
       //   headless: true,
-      //   name: 'chrome'
+      //   instances: [
+      //     {
+      //       browser: 'chromium',
+      //     },
+      //   ],
       // },
       css: {
         include: [ /.+/ ]

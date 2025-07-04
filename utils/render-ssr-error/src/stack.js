@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, relative } from 'node:path'
 import { parse } from 'stack-trace'
 
 function getFilename (filename) {
@@ -13,6 +13,13 @@ function getFilename (filename) {
 
   if (process.env.NVM_DIR && process.versions.node) {
     const nodeFilename = join(process.env.NVM_DIR, 'src/node-v' + process.versions.node, 'lib', filename)
+    if (existsSync(nodeFilename)) {
+      return nodeFilename
+    }
+  }
+
+  if (process.env.FNM_DIR && process.versions.node) {
+    const nodeFilename = join(process.env.FNM_DIR, 'src/node-versions/v' + process.versions.node, 'installation/lib', filename)
     if (existsSync(nodeFilename)) {
       return nodeFilename
     }
@@ -59,14 +66,14 @@ function getSource (entry) {
   }
 }
 
-export function getStack (err) {
+export function getStack (err, projectRootFolder) {
   const trace = parse(err)
 
   return trace.map(entry => {
     const { fileName, sourceCode } = getSource(entry)
 
     return {
-      fileName,
+      fileName: relative(projectRootFolder, fileName),
       sourceCode,
       functionName: entry.getTypeName() || entry.getFunctionName(),
       methodName: `${ entry.isConstructor() ? 'new ' : '' }${ entry.getMethodName() || '<anonymous>' }`,

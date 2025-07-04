@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Яну_Фев_Мар_Апр_Май_Юни_Юли_Авг_Сеп_Окт_Ное_Дек'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'дни'
+    pluralDay: 'дни',
+    prevMonth: 'Предишния месец',
+    nextMonth: 'Следващия месец',
+    prevYear: 'Предходната година',
+    nextYear: 'Догодина',
+    today: 'Днес',
+    prevRangeYears: range => `Предишен ${ range } години`,
+    nextRangeYears: range => `След това ${ range } години`
   },
   table: {
     noData: 'Няма данни',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Всички',
     pagination: (start, end, total) => start + '-' + end + ' от ' + total,
     columns: 'Колони'
+  },
+  pagination: {
+    first: 'Първа страница',
+    prev: 'Предишна страница',
+    next: 'Следваща страница',
+    last: 'Последна страница'
   },
   editor: {
     url: 'URL',

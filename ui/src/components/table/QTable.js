@@ -91,10 +91,14 @@ export default createComponent({
     tableClass: [ String, Array, Object ],
     tableHeaderStyle: [ String, Array, Object ],
     tableHeaderClass: [ String, Array, Object ],
+    tableRowStyleFn: Function,
+    tableRowClassFn: Function,
     cardContainerClass: [ String, Array, Object ],
     cardContainerStyle: [ String, Array, Object ],
     cardStyle: [ String, Array, Object ],
     cardClass: [ String, Array, Object ],
+    cardStyleFn: Function,
+    cardClassFn: Function,
 
     hideBottom: Boolean,
     hideSelectedBanner: Boolean,
@@ -148,7 +152,7 @@ export default createComponent({
       + (props.bordered === true ? ' q-table--bordered' : '')
     )
 
-    const __containerClass = computed(() =>
+    const containerClass = computed(() =>
       `q-table__container q-table--${ props.separator }-separator column no-wrap`
       + (props.grid === true ? ' q-table--grid' : cardDefaultClass.value)
       + (isDark.value === true ? ' q-table--dark' : '')
@@ -157,13 +161,13 @@ export default createComponent({
       + (inFullscreen.value === true ? ' fullscreen scroll' : '')
     )
 
-    const containerClass = computed(() =>
-      __containerClass.value + (props.loading === true ? ' q-table--loading' : '')
+    const rootContainerClass = computed(() =>
+      containerClass.value + (props.loading === true ? ' q-table--loading' : '')
     )
 
     watch(
-      () => props.tableStyle + props.tableClass + props.tableHeaderStyle + props.tableHeaderClass + __containerClass.value,
-      () => { hasVirtScroll.value === true && virtScrollRef.value !== null && virtScrollRef.value.reset() }
+      () => props.tableStyle + props.tableClass + props.tableHeaderStyle + props.tableHeaderClass + containerClass.value,
+      () => { hasVirtScroll.value === true && virtScrollRef.value?.reset() }
     )
 
     const {
@@ -382,13 +386,26 @@ export default createComponent({
         selected = isRowSelected(key)
 
       if (bodySlot !== void 0) {
+        const cfg = {
+          key,
+          row,
+          pageIndex,
+          __trClass: selected ? 'selected' : ''
+        }
+
+        if (props.tableRowStyleFn !== void 0) {
+          cfg.__trStyle = props.tableRowStyleFn(row)
+        }
+
+        if (props.tableRowClassFn !== void 0) {
+          const cls = props.tableRowClassFn(row)
+          if (cls) {
+            cfg.__trClass = `${ cls } ${ cfg.__trClass }`
+          }
+        }
+
         return bodySlot(
-          getBodyScope({
-            key,
-            row,
-            pageIndex,
-            __trClass: selected ? 'selected' : ''
-          })
+          getBodyScope(cfg)
         )
       }
 
@@ -448,6 +465,17 @@ export default createComponent({
         data.class[ 'cursor-pointer' ] = true
         data.onContextmenu = evt => {
           emit('rowContextmenu', evt, row, pageIndex)
+        }
+      }
+
+      if (props.tableRowStyleFn !== void 0) {
+        data.style = props.tableRowStyleFn(row)
+      }
+
+      if (props.tableRowClassFn !== void 0) {
+        const cls = props.tableRowClassFn(row)
+        if (cls) {
+          data.class[ cls ] = true
         }
       }
 
@@ -594,10 +622,7 @@ export default createComponent({
         )
       }
 
-      if (child.length === 0) {
-        return
-      }
-
+      if (child.length === 0) return
       return h('div', { class: topClass }, child)
     }
 
@@ -726,14 +751,10 @@ export default createComponent({
     })
 
     function getBottomDiv () {
-      if (props.hideBottom === true) {
-        return
-      }
+      if (props.hideBottom === true) return
 
       if (nothingToDisplay.value === true) {
-        if (props.hideNoData === true) {
-          return
-        }
+        if (props.hideNoData === true) return
 
         const message = props.loading === true
           ? props.loadingLabel || $q.lang.table.loading
@@ -799,30 +820,28 @@ export default createComponent({
         h('div', { class: 'q-table__separator col' })
       )
 
-      if (hasOpts === true) {
-        child.push(
-          h('div', { class: 'q-table__control' }, [
-            h('span', { class: 'q-table__bottom-item' }, [
-              props.rowsPerPageLabel || $q.lang.table.recordsPerPage
-            ]),
-            h(QSelect, {
-              class: 'q-table__select inline q-table__bottom-item',
-              color: props.color,
-              modelValue: rowsPerPage,
-              options: computedRowsPerPageOptions.value,
-              displayValue: rowsPerPage === 0
-                ? $q.lang.table.allRows
-                : rowsPerPage,
-              dark: isDark.value,
-              borderless: true,
-              dense: true,
-              optionsDense: true,
-              optionsCover: true,
-              'onUpdate:modelValue': onPagSelection
-            })
-          ])
-        )
-      }
+      hasOpts === true && child.push(
+        h('div', { class: 'q-table__control' }, [
+          h('span', { class: 'q-table__bottom-item' }, [
+            props.rowsPerPageLabel || $q.lang.table.recordsPerPage
+          ]),
+          h(QSelect, {
+            class: 'q-table__select inline q-table__bottom-item',
+            color: props.color,
+            modelValue: rowsPerPage,
+            options: computedRowsPerPageOptions.value,
+            displayValue: rowsPerPage === 0
+              ? $q.lang.table.allRows
+              : rowsPerPage,
+            dark: isDark.value,
+            borderless: true,
+            dense: true,
+            optionsDense: true,
+            optionsCover: true,
+            'onUpdate:modelValue': onPagSelection
+          })
+        ])
+      )
 
       if (paginationSlot !== void 0) {
         control = paginationSlot(marginalsScope.value)
@@ -854,6 +873,7 @@ export default createComponent({
               ...btnProps,
               icon: navIcon.value[ 0 ],
               disable: isFirstPage.value,
+              'aria-label': $q.lang.pagination.first,
               onClick: firstPage
             })
           )
@@ -864,6 +884,7 @@ export default createComponent({
               ...btnProps,
               icon: navIcon.value[ 1 ],
               disable: isFirstPage.value,
+              'aria-label': $q.lang.pagination.prev,
               onClick: prevPage
             }),
 
@@ -872,6 +893,7 @@ export default createComponent({
               ...btnProps,
               icon: navIcon.value[ 2 ],
               disable: isLastPage.value,
+              'aria-label': $q.lang.pagination.next,
               onClick: nextPage
             })
           )
@@ -882,6 +904,7 @@ export default createComponent({
               ...btnProps,
               icon: navIcon.value[ 3 ],
               disable: isLastPage.value,
+              'aria-label': $q.lang.pagination.last,
               onClick: lastPage
             })
           )
@@ -952,9 +975,21 @@ export default createComponent({
             style: props.cardStyle
           }
 
+          if (props.cardStyleFn !== void 0) {
+            data.style = [ data.style, props.cardStyleFn(scope.row) ]
+          }
+
+          if (props.cardClassFn !== void 0) {
+            const cls = props.cardClassFn(scope.row)
+            if (cls) {
+              data.class[ 0 ] += ` ${ cls }`
+            }
+          }
+
           if (
             props.onRowClick !== void 0
             || props.onRowDblclick !== void 0
+            || props.onRowContextmenu !== void 0
           ) {
             data.class[ 0 ] += ' cursor-pointer'
 
@@ -967,6 +1002,12 @@ export default createComponent({
             if (props.onRowDblclick !== void 0) {
               data.onDblclick = evt => {
                 emit('RowDblclick', evt, scope.row, scope.pageIndex)
+              }
+            }
+
+            if (props.onRowContextmenu !== void 0) {
+              data.onContextmenu = evt => {
+                emit('rowContextmenu', evt, scope.row, scope.pageIndex)
               }
             }
           }
@@ -1020,7 +1061,7 @@ export default createComponent({
 
     return () => {
       const child = [ getTopDiv() ]
-      const data = { ref: rootRef, class: containerClass.value }
+      const data = { ref: rootRef, class: rootContainerClass.value }
 
       if (props.grid === true) {
         child.push(getGridHeader())

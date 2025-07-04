@@ -49,10 +49,10 @@ export default function (api) {
   api.compatibleWith('quasar', '^2.0.0')
 
   if (api.hasVite === true) {
-    api.compatibleWith('@quasar/app-vite', '^2.0.0-beta.1')
+    api.compatibleWith('@quasar/app-vite', '^2.0.0')
   }
   else { // api.hasWebpack === true
-    api.compatibleWith('@quasar/app-webpack', '^4.0.0-beta.1')
+    api.compatibleWith('@quasar/app-webpack', '^4.0.0')
   }
 
   // Here we extend the /quasar.config file, so we can add
@@ -78,7 +78,7 @@ function extendConf (conf, api) {
   // @quasar/app-vite does not need this
   if (api.hasVite !== true) {
     // make sure boot & other files get transpiled
-    conf.build.transpileDependencies.push(/quasar-app-extension-my-directive[\\/]src/)
+    conf.build.webpackTranspileDependencies.push(/quasar-app-extension-my-directive[\\/]src/)
   }
 }
 ```

@@ -26,7 +26,14 @@ export default {
     monthsShort: 'جان_فيف_مار_أفر_ماي_جوا_جوي_أوت_سبت_أكت_نوف_ديس'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: 'أيام'
+    pluralDay: 'أيام',
+    prevMonth: 'الشهر السابق',
+    nextMonth: 'الشهر القادم',
+    prevYear: 'السنة السابقة',
+    nextYear: 'السنة القادمة',
+    today: 'اليوم',
+    prevRangeYears: range => `السابق ${ range } سنوات`,
+    nextRangeYears: range => `التالي ${ range } سنوات`
   },
   table: {
     noData: 'لا توجد بيانات',
@@ -45,6 +52,12 @@ export default {
     allRows: 'الكل',
     pagination: (start, end, total) => start + '-' + end + ' من ' + total,
     columns: 'أعمدة'
+  },
+  pagination: {
+    first: 'الصفحة الأولى',
+    prev: 'الصفحة السابقة',
+    next: 'الصفحة التالية',
+    last: 'الصفحة الأخيرة'
   },
   editor: {
     url: 'رابط',

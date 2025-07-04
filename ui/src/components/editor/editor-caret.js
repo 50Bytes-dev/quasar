@@ -91,7 +91,7 @@ export default class Caret {
   get range () {
     const sel = this.selection
 
-    if (sel !== null && sel.rangeCount) {
+    if (sel?.rangeCount) {
       return sel.getRangeAt(0)
     }
 
@@ -296,11 +296,13 @@ export default class Caret {
         const selection = this.selectWord(this.selection)
         const url = selection ? selection.toString() : ''
 
-        if (!url.length) {
-          if (!this.range || !this.range.cloneContents().querySelector('img')) {
-            return
-          }
-        }
+        if (
+          !url.length
+          && (
+            !this.range
+            || !this.range.cloneContents().querySelector('img')
+          )
+        ) return
 
         this.eVm.editLinkUrl.value = urlRegex.test(url) ? url : 'https://'
         document.execCommand('createLink', false, this.eVm.editLinkUrl.value)

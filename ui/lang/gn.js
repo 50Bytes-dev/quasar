@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'ára'
+    pluralDay: 'ára',
+    prevMonth: 'Aravó mês',
+    nextMonth: 'Año próximo',
+    prevYear: 'Aravó ary',
+    nextYear: 'Año oúvo',
+    today: 'Ko\'ẽ',
+    prevRangeYears: range => `Opa uvicha ${ range } ary`,
+    nextRangeYears: range => `Yvypóra ${ range } ary`
   },
   table: {
     noData: 'Ni peteĨ mba\'e',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Entero',
     pagination: (start, end, total) => start + '-' + end + ' de ' + total,
     columns: 'Columnakuéra'
+  },
+  pagination: {
+    first: 'Aña kuatia',
+    prev: 'Kuatia ohasáva',
+    next: 'Kuatia ohasáva',
+    last: 'Kuatia última'
   },
   editor: {
     url: 'URL',

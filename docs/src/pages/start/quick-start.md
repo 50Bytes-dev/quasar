@@ -20,12 +20,12 @@ Enter the following command:
 <<| bash Yarn |>>
 $ yarn create quasar
 <<| bash NPM |>>
-$ npm init quasar
+$ npm init quasar@latest
 <<| bash PNPM |>>
-$ pnpm create quasar
+$ pnpm create quasar@latest
 <<| bash Bun |>>
 # experimental support
-$ bun create quasar
+$ bun create quasar@latest
 ```
 
 As the `create` or `init` command runs, you'll be prompted with some options. Depending on your needs, you can select the CLI type (Vite or Webpack) and you can add things like TypeScript support or a different CSS preprocessor. If you are unsure about any of the options, just take the defaults (hit enter) and you'll be good to go. You can change the options, except for the CLI type, later if you wish.

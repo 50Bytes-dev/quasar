@@ -126,9 +126,7 @@ export default createComponent({
     }
 
     function onKeydown (evt) {
-      if (!keyCodes.includes(evt.keyCode)) {
-        return
-      }
+      if (keyCodes.includes(evt.keyCode) === false) return
 
       stopAndPrevent(evt)
 

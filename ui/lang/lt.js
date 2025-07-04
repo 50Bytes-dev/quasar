@@ -37,7 +37,14 @@ export default {
     monthsShort: 'Sau_Vas_Kov_Bal_Geg_Bir_Lie_Rgp_Rgs_Spa_Lap_Gru'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'dienos'
+    pluralDay: 'dienos',
+    prevMonth: 'Ankstesnis mėnuo',
+    nextMonth: 'Kitą mėnesį',
+    prevYear: 'Ankstesni metai',
+    nextYear: 'Kitais metais',
+    today: 'Šiandien',
+    prevRangeYears: range => `Ankstesnis ${ range } metai`,
+    nextRangeYears: range => `Kitas ${ range } metai`
   },
   table: {
     noData: 'Nėra duomenų',
@@ -52,6 +59,12 @@ export default {
     allRows: 'Visi',
     pagination: (start, end, total) => start + '-' + end + ' iš ' + total,
     columns: 'Stulpeliai'
+  },
+  pagination: {
+    first: 'Pirmasis puslapis',
+    prev: 'Ankstesnis puslapis',
+    next: 'Kitas puslapis',
+    last: 'Paskutinis puslapis'
   },
   editor: {
     url: 'URL',

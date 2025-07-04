@@ -4,12 +4,12 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { mergeConfig } from 'vite'
-import { configure } from 'quasar/wrappers'
+import { defineConfig } from '#q-app/wrappers'
 
 const rootFolder = fileURLToPath(new URL('.', import.meta.url))
 const resolve = _path => join(rootFolder, _path)
 
-export default configure(ctx => {
+export default defineConfig(ctx => {
   return {
     boot: [
       ctx.mode.ssr ? { path: 'ssr-client', server: false } : ''
@@ -42,15 +42,15 @@ export default configure(ctx => {
         'quasar/dist/quasar.sass': resolve('../src/css/index.sass'),
         'quasar/icon-set': resolve('../icon-set'),
         'quasar/lang': resolve('../lang'),
-        'quasar/src': resolve('../src'),
-        'quasar/wrappers': resolve('../wrappers/index.js')
+        'quasar/src': resolve('../src')
       },
 
       vitePlugins: [
         [ 'vite-plugin-checker', {
           eslint: {
             root: resolve('../'),
-            lintCommand: 'eslint  --report-unused-disable-directives "./**/*.{js,mjs,cjs,vue}"'
+            lintCommand: 'eslint --cache "./**/*.{js,mjs,cjs,vue}"',
+            useFlatConfig: true
           }
         }, { server: false } ]
       ],

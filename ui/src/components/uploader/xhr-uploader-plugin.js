@@ -183,9 +183,7 @@ function injectPlugin ({ props, emit, helpers }) {
     }, false)
 
     xhr.onreadystatechange = () => {
-      if (xhr.readyState < 4) {
-        return
-      }
+      if (xhr.readyState < 4) return
 
       if (xhr.status && xhr.status < 400) {
         helpers.uploadedFiles.value = helpers.uploadedFiles.value.concat(files)

@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Jan_Feb_Mar_Apr_Maj_Jun_Jul_Aug_Sep_Okt_Nov_Dec'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'dana'
+    pluralDay: 'dana',
+    prevMonth: 'Prethodni mjesec',
+    nextMonth: 'Sledeći mesec',
+    prevYear: 'Prethodne godine',
+    nextYear: 'Sljedeće godine',
+    today: 'Danas',
+    prevRangeYears: range => `Prethodni ${ range } godina`,
+    nextRangeYears: range => `Sljedeći ${ range } Godina`
   },
   table: {
     noData: 'Nema podataka',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Sve',
     pagination: (start, end, total) => start + '-' + end + ' od ' + total,
     columns: 'Kolone'
+  },
+  pagination: {
+    first: 'Prva stranica',
+    prev: 'Prethodna stranica',
+    next: 'Sljedeća stranica',
+    last: 'Zadnja stranica'
   },
   editor: {
     url: 'URL',

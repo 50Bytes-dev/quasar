@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Ιαν_Φεβ_Μαρ_Απρ_Μαϊ_Ιουν_Ιουλ_Αυγ_Σεπ_Οκτ_Νοε_Δεκ'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'ημέρες'
+    pluralDay: 'ημέρες',
+    prevMonth: 'Προηγούμενος μήνας',
+    nextMonth: 'Τον επόμενο μήνα',
+    prevYear: 'Προηγούμενο έτος',
+    nextYear: 'Προσεχές έτος',
+    today: 'Σήμερα',
+    prevRangeYears: range => `Προηγούμενο ${ range } χρόνια`,
+    nextRangeYears: range => `Επόμενο ${ range } χρόνια`
   },
   table: {
     noData: 'Χωρίς δεδομένα',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Όλες',
     pagination: (start, end, total) => start + '-' + end + ' από ' + total,
     columns: 'Στήλες'
+  },
+  pagination: {
+    first: 'Πρώτη σελίδα',
+    prev: 'Προηγούμενη σελίδα',
+    next: 'Επόμενη σελίδα',
+    last: 'Τελευταία σελίδα'
   },
   editor: {
     url: 'Διεύθυνση URL', // Needs Translation

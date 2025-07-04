@@ -2,7 +2,7 @@
 // and by @quasar/app-* auto-import feature
 
 import path from 'node:path'
-import glob from 'fast-glob'
+import { globSync } from 'tinyglobby'
 
 import {
   rootFolder,
@@ -27,7 +27,7 @@ function lowerCamelCase (name) {
 }
 
 function addComponents (map, autoImport) {
-  glob.sync('src/components/*/Q*.js', { cwd: rootFolder, absolute: true })
+  globSync('src/components/*/Q*.js', { cwd: rootFolder, absolute: true })
     .filter(filterOutPrivateFiles)
     .map(relative)
     .forEach(file => {
@@ -45,7 +45,7 @@ function addComponents (map, autoImport) {
 }
 
 function addDirectives (map, autoImport) {
-  glob.sync('src/directives/*/*.js', { cwd: rootFolder, absolute: true })
+  globSync('src/directives/*/*.js', { cwd: rootFolder, absolute: true })
     .filter(filterOutPrivateFiles)
     .map(relative)
     .forEach(file => {
@@ -61,7 +61,7 @@ function addDirectives (map, autoImport) {
 }
 
 function addPlugins (map) {
-  glob.sync('src/plugins/*/*.js', { cwd: rootFolder, absolute: true })
+  globSync('src/plugins/*/*.js', { cwd: rootFolder, absolute: true })
     .filter(filterOutPrivateFiles)
     .map(relative)
     .forEach(file => {
@@ -71,7 +71,7 @@ function addPlugins (map) {
 }
 
 function addComposables (map) {
-  glob.sync('src/composables/*/*.js', { cwd: rootFolder, absolute: true })
+  globSync('src/composables/*/*.js', { cwd: rootFolder, absolute: true })
     .filter(filterOutPrivateFiles)
     .map(relative)
     .forEach(file => {
@@ -81,7 +81,7 @@ function addComposables (map) {
 }
 
 function addUtils (map) {
-  glob.sync('src/utils/*/*.js', { cwd: rootFolder, absolute: true })
+  globSync('src/utils/*/*.js', { cwd: rootFolder, absolute: true })
     .filter(filterOutPrivateFiles)
     .map(relative)
     .forEach(file => {

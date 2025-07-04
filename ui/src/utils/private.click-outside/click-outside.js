@@ -19,9 +19,7 @@ function globalHandler (evt) {
     target === void 0
     || target.nodeType === 8
     || target.classList.contains('no-pointer-events') === true
-  ) {
-    return
-  }
+  ) return
 
   // check last portal vm if it's
   // a QDialog and not in seamless mode
@@ -40,9 +38,7 @@ function globalHandler (evt) {
       break
     }
 
-    if (proxy.props.seamless !== true) {
-      return
-    }
+    if (proxy.props.seamless !== true) return
 
     portalIndex--
   }

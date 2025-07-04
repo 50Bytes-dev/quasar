@@ -80,9 +80,7 @@ export default createDirective(__QUASAR_SSR_SERVER__
       beforeMount (el, binding) {
         const cfg = binding.instance.$.appContext.config.globalProperties.$q.config || {}
 
-        if (cfg.ripple === false) {
-          return
-        }
+        if (cfg.ripple === false) return
 
         const ctx = {
           cfg,

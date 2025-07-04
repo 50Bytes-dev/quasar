@@ -25,7 +25,14 @@ export default {
     monthsShort: 'jaan_veebr_märts_apr_mai_juuni_juuli_aug_sept_okt_nov_dets'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'päeva'
+    pluralDay: 'päeva',
+    prevMonth: 'Eelmine kuu',
+    nextMonth: 'Järgmisel kuul',
+    prevYear: 'Eelmine aasta',
+    nextYear: 'Järgmisel aastal',
+    today: 'Täna',
+    prevRangeYears: range => `Eelmine ${ range } aastad`,
+    nextRangeYears: range => `Järgmine ${ range } aastat`
   },
   table: {
     noData: 'Andmeid ei ole',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Kõik',
     pagination: (start, end, total) => start + '-' + end + ' / ' + total,
     columns: 'Veerud'
+  },
+  pagination: {
+    first: 'Esimene leht',
+    prev: 'Eelmine leht',
+    next: 'Järgmine leht',
+    last: 'Viimane leht'
   },
   editor: {
     url: 'URL',

@@ -15,7 +15,9 @@ scope:
         - l: index.html
         - l: package.json
         - l: electron-main.js
+          e: (or .ts)
         - l: electron-preload.js
+          e: (or .ts)
         - l: "...contents of /public"
 ---
 
@@ -101,6 +103,9 @@ If for some reason, you have important files that you are storing in the /public
 
 ```js /electron-main or /electron-preload
 import path from 'path'
+import { fileURLToPath } from 'url'
 
-const publicFolder = path.resolve(__dirname, process.env.QUASAR_PUBLIC_FOLDER)
+const currentDir = fileURLToPath(new URL('.', import.meta.url))
+
+const publicFolder = path.resolve(currentDir, process.env.QUASAR_PUBLIC_FOLDER)
 ```

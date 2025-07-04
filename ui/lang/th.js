@@ -25,7 +25,14 @@ export default {
     monthsShort: 'ม.ค._ก.พ._มี.ค._เม.ย._พ.ค._มิ.ย._ก.ค._ส.ค._ก.ย._ต.ค._พ.ย._ธ.ค.'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'วัน'
+    pluralDay: 'วัน',
+    prevMonth: 'เดือนที่แล้ว',
+    nextMonth: 'เดือนถัดไป',
+    prevYear: 'ปีที่แล้ว',
+    nextYear: 'ปีหน้า',
+    today: 'วันนี้',
+    prevRangeYears: range => `ก่อนหน้านี้ ${ range } ปี`,
+    nextRangeYears: range => `ถัดไป ${ range } ปี`
   },
   table: {
     noData: 'ไม่มีข้อมูล',
@@ -40,6 +47,12 @@ export default {
     allRows: 'แถวทั้งหมด',
     pagination: (start, end, total) => start + '-' + end + ' of ' + total,
     columns: 'คอลัมน์'
+  },
+  pagination: {
+    first: 'หน้าแรก',
+    prev: 'หน้าก่อนหน้า',
+    next: 'หน้าถัดไป',
+    last: 'หน้าสุดท้าย'
   },
   editor: {
     url: 'URL',

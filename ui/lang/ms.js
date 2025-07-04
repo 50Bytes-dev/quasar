@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Jan_Feb_Mac_Apr_Mei_Jun_Jul_Ogos_Sep_Okt_Nov_Dis'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: 'hari'
+    pluralDay: 'hari',
+    prevMonth: 'Bulan sebelumnya',
+    nextMonth: 'Bulan depan',
+    prevYear: 'Tahun sebelumnya',
+    nextYear: 'Tahun depan',
+    today: 'Hari ini',
+    prevRangeYears: range => `Sebelumnya ${ range } tahun`,
+    nextRangeYears: range => `Seterusnya ${ range } tahun`
   },
   table: {
     noData: 'Tiada data tersedia',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Semua',
     pagination: (start, end, total) => start + '-' + end + ' dari ' + total,
     columns: 'Kolum'
+  },
+  pagination: {
+    first: 'Halaman pertama',
+    prev: 'Halaman sebelumnya',
+    next: 'Halaman seterusnya',
+    last: 'Halaman terakhir'
   },
   editor: {
     url: 'URL',

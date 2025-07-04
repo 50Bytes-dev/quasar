@@ -39,9 +39,10 @@ export function createHeadTags (quasarConf) {
 }
 
 export function injectPwaManifest (quasarConf, ifNotAlreadyGenerated) {
-  if (ifNotAlreadyGenerated === true && quasarConf.htmlVariables.pwaManifest !== void 0) {
-    return
-  }
+  if (
+    ifNotAlreadyGenerated === true
+    && quasarConf.htmlVariables.pwaManifest !== void 0
+  ) return
 
   const { appPkg } = quasarConf.ctx.pkg
 

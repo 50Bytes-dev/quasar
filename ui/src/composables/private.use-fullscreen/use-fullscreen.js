@@ -44,9 +44,7 @@ export default function () {
   }
 
   function setFullscreen () {
-    if (inFullscreen.value === true) {
-      return
-    }
+    if (inFullscreen.value === true) return
 
     inFullscreen.value = true
     container = proxy.$el.parentNode
@@ -65,9 +63,7 @@ export default function () {
   }
 
   function exitFullscreen () {
-    if (inFullscreen.value !== true) {
-      return
-    }
+    if (inFullscreen.value !== true) return
 
     if (historyEntry !== void 0) {
       History.remove(historyEntry)

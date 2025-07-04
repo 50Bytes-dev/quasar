@@ -2,7 +2,7 @@ import { readFileSync, statSync } from 'node:fs'
 import { join, dirname, basename } from 'node:path'
 import { gzipSync } from 'zlib'
 import { underline, green, blue, magenta, cyan, gray } from 'kolorist'
-import fglob from 'fast-glob'
+import { globSync } from 'tinyglobby'
 
 const highlightTypes = [ 'js', 'css' ]
 const delimiters = {
@@ -23,7 +23,7 @@ function getAssets (distDir) {
   const acc = []
 
   Object.keys(colorFn).forEach(type => {
-    const fileList = fglob.sync([ `**/*.${ type }` ], { cwd: distDir })
+    const fileList = globSync([ `**/*.${ type }` ], { cwd: distDir })
     const assets = fileList.map(name => {
       const file = join(distDir, name)
       const { size } = statSync(file)

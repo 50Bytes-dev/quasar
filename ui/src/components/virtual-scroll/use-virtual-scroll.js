@@ -20,18 +20,14 @@ const filterProto = Array.prototype.filter
 const setOverflowAnchor = __QUASAR_SSR__ || window.getComputedStyle(document.body).overflowAnchor === void 0
   ? noop
   : function (contentEl, index) {
-    if (contentEl === null) {
-      return
-    }
+    if (contentEl === null) return
 
     if (contentEl._qOverflowAnimationFrame !== void 0) {
       cancelAnimationFrame(contentEl._qOverflowAnimationFrame)
     }
 
     contentEl._qOverflowAnimationFrame = requestAnimationFrame(() => {
-      if (contentEl === null) {
-        return
-      }
+      if (contentEl === null) return
 
       contentEl._qOverflowAnimationFrame = void 0
       const children = contentEl.children || []
@@ -44,7 +40,7 @@ const setOverflowAnchor = __QUASAR_SSR__ || window.getComputedStyle(document.bod
 
       const el = children[ index ]
 
-      if (el && el.dataset) {
+      if (el?.dataset) {
         el.dataset.qVsAnchor = ''
       }
     })
@@ -279,9 +275,11 @@ export function useVirtualScroll ({
   function scrollTo (toIndex, edge) {
     const scrollEl = getVirtualScrollTarget()
 
-    if (scrollEl === void 0 || scrollEl === null || scrollEl.nodeType === 8) {
-      return
-    }
+    if (
+      scrollEl === void 0
+      || scrollEl === null
+      || scrollEl.nodeType === 8
+    ) return
 
     const scrollDetails = getScrollDetails(
       scrollEl,
@@ -308,9 +306,11 @@ export function useVirtualScroll ({
   function localOnVirtualScrollEvt () {
     const scrollEl = getVirtualScrollTarget()
 
-    if (scrollEl === void 0 || scrollEl === null || scrollEl.nodeType === 8) {
-      return
-    }
+    if (
+      scrollEl === void 0
+      || scrollEl === null
+      || scrollEl.nodeType === 8
+    ) return
 
     const
       scrollDetails = getScrollDetails(
@@ -326,9 +326,7 @@ export function useVirtualScroll ({
       listLastIndex = virtualScrollLength.value - 1,
       listEndOffset = scrollDetails.scrollMaxSize - scrollDetails.offsetStart - scrollDetails.offsetEnd - virtualScrollPaddingAfter.value
 
-    if (prevScrollStart === scrollDetails.scrollStart) {
-      return
-    }
+    if (prevScrollStart === scrollDetails.scrollStart) return
 
     if (scrollDetails.scrollMaxSize <= 0) {
       setVirtualScrollSliceRange(scrollEl, scrollDetails, 0, 0)
@@ -424,7 +422,7 @@ export function useVirtualScroll ({
       contentEl.addEventListener('focusout', onBlurRefocusFn)
 
       setTimeout(() => {
-        contentEl !== null && contentEl.removeEventListener('focusout', onBlurRefocusFn)
+        contentEl?.removeEventListener('focusout', onBlurRefocusFn)
       })
     }
 
@@ -456,9 +454,7 @@ export function useVirtualScroll ({
     requestAnimationFrame(() => {
       // if the scroll was changed give up
       // (another call to setVirtualScrollSliceRange before animation frame)
-      if (prevScrollStart !== scrollDetails.scrollStart) {
-        return
-      }
+      if (prevScrollStart !== scrollDetails.scrollStart) return
 
       if (rangeChanged === true) {
         updateVirtualScrollSizes(from)
@@ -537,7 +533,7 @@ export function useVirtualScroll ({
   }
 
   function onBlurRefocusFn () {
-    contentRef.value !== null && contentRef.value !== void 0 && contentRef.value.focus()
+    contentRef.value?.focus()
   }
 
   function localResetVirtualScroll (toIndex, fullReset) {

@@ -163,9 +163,7 @@ export default createComponent({
         props.multiple === true
           ? props.modelValue && files.every(f => innerValue.value.includes(f))
           : props.modelValue === files[ 0 ]
-      ) {
-        return
-      }
+      ) return
 
       emitValue(
         isAppending.value === true

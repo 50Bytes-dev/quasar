@@ -149,10 +149,7 @@ export default createComponent({
       if (hasMask.value === true) {
         if (stopValueWatcher === true) {
           stopValueWatcher = false
-
-          if (String(v) === emitCachedValue) {
-            return
-          }
+          if (String(v) === emitCachedValue) return
         }
 
         updateMaskValue(v)
@@ -206,7 +203,7 @@ export default createComponent({
     }
 
     function select () {
-      inputRef.value !== null && inputRef.value.select()
+      inputRef.value?.select()
     }
 
     function onPaste (e) {
@@ -219,9 +216,7 @@ export default createComponent({
     }
 
     function onInput (e) {
-      if (!e || !e.target) {
-        return
-      }
+      if (!e || !e.target) return
 
       if (props.type === 'file') {
         emit('update:modelValue', e.target.files)
@@ -232,7 +227,6 @@ export default createComponent({
 
       if (e.target.qComposing === true) {
         temp.value = val
-
         return
       }
 
@@ -346,7 +340,7 @@ export default createComponent({
         emitTimer = null
       }
 
-      emitValueFn !== void 0 && emitValueFn()
+      emitValueFn?.()
 
       emit('change', e.target.value)
     }
@@ -359,7 +353,7 @@ export default createComponent({
         emitTimer = null
       }
 
-      emitValueFn !== void 0 && emitValueFn()
+      emitValueFn?.()
 
       typedNumber = false
       stopValueWatcher = false

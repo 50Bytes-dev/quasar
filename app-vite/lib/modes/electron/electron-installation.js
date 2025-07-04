@@ -1,22 +1,17 @@
-import fs from 'node:fs'
 import fse from 'fs-extra'
 
 import { log, warn } from '../../utils/logger.js'
-import { generateTypesFeatureFlag } from '../../utils/types-feature-flags.js'
+import { isModeInstalled } from '../modes-utils.js'
 
 const electronDeps = {
   electron: 'latest'
-}
-
-export function isModeInstalled (appPaths) {
-  return fs.existsSync(appPaths.electronDir)
 }
 
 export async function addMode ({
   ctx: { appPaths, cacheProxy },
   silent
 }) {
-  if (isModeInstalled(appPaths)) {
+  if (isModeInstalled(appPaths, 'electron')) {
     if (silent !== true) {
       warn('Electron support detected already. Aborting.')
     }
@@ -31,13 +26,11 @@ export async function addMode ({
 
   log('Creating Electron source folder...')
   const hasTypescript = await cacheProxy.getModule('hasTypescript')
-  const format = hasTypescript ? 'ts' : 'default'
+  const format = hasTypescript ? 'ts' : 'js'
   fse.copySync(
     appPaths.resolve.cli(`templates/electron/${ format }`),
     appPaths.electronDir
   )
-
-  generateTypesFeatureFlag('electron', appPaths)
 
   log('Creating Electron icons folder...')
   fse.copySync(
@@ -51,7 +44,7 @@ export async function addMode ({
 export async function removeMode ({
   ctx: { appPaths, cacheProxy }
 }) {
-  if (!isModeInstalled(appPaths)) {
+  if (isModeInstalled(appPaths, 'electron') === false) {
     warn('No Electron support detected. Aborting.')
     return
   }

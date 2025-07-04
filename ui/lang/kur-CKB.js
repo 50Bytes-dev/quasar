@@ -35,7 +35,14 @@ export default {
     firstDayOfWeek: 6, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
     singleDay: 'ڕۆژ',
-    pluralDay: 'ڕۆژەکان'
+    pluralDay: 'ڕۆژەکان',
+    prevMonth: 'مێژووی مانگی پێشوو',
+    nextMonth: 'مانگی داهاتوو',
+    prevYear: 'ساڵی پێشوو',
+    nextYear: 'ساڵی داهاتوو',
+    today: 'ئه‌م ڕوژیە',
+    prevRangeYears: range => `پێشوو ${ range } ساڵ`,
+    nextRangeYears: range => `nدواتر ${ range } ساڵ`
   },
   table: {
     noData: 'هیچ داتەیەک نییە',
@@ -50,6 +57,12 @@ export default {
     allRows: 'هەمووی',
     pagination: (start, end, total) => start + '-' + end + ' لە ' + total,
     columns: 'ڕیز'
+  },
+  pagination: {
+    first: 'پەڕەی یەکەمی',
+    prev: 'پەڕەی پێشوو',  
+    next: 'پەڕەی داهاتوو',
+    last: 'پەڕەی کۆتایی'
   },
   editor: {
     url: 'لینک',

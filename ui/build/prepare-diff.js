@@ -1,5 +1,5 @@
 import fse from 'fs-extra'
-import glob from 'fast-glob'
+import { globSync, convertPathToPattern } from 'tinyglobby'
 import { createPatch } from 'diff'
 import { highlight } from 'cli-highlight'
 
@@ -19,14 +19,14 @@ export default function prepareDiff (locationPath) {
     return
   }
 
-  let pattern = glob.convertPathToPattern(absolutePath)
+  let pattern = convertPathToPattern(absolutePath)
   // If it's a directory, then query all files in it
   if (fse.lstatSync(absolutePath).isDirectory()) {
     pattern += '/*'
   }
 
   const originalsMap = new Map()
-  const originalFiles = glob.sync(pattern)
+  const originalFiles = globSync(pattern)
 
   // If no files, then there is no diff (everything will be new)
   if (originalFiles.length === 0) {
@@ -42,7 +42,7 @@ export default function prepareDiff (locationPath) {
   process.on('exit', code => {
     if (code !== 0) return
 
-    const currentFiles = glob.sync(pattern)
+    const currentFiles = globSync(pattern)
     const currentMap = new Map()
 
     let somethingChanged = false

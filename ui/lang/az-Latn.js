@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Yan_Fev_Mar_Apr_May_İyn_İyl_Avq_Sen_Okt_Noy_Dek'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'gün'
+    pluralDay: 'gün',
+    prevMonth: 'Ötən ay',
+    nextMonth: 'Gələn ay',
+    prevYear: 'Ötən il',
+    nextYear: 'Gələn il',
+    today: 'Bu gün',
+    prevRangeYears: range => `Əvvəlki ${ range } illər`,
+    nextRangeYears: range => `Ardı ${ range } illər`
   },
   table: {
     noData: 'Məlumat yoxdur',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Bütün',
     pagination: (start, end, total) => start + '-' + end + ' cəmi ' + total,
     columns: 'Sütun'
+  },
+  pagination: {
+    first: 'İlk səhifə',
+    prev: 'Əvvəlki səhifə',
+    next: 'Növbəti səhifə',
+    last: 'Son səhifə'
   },
   editor: {
     url: 'URL',

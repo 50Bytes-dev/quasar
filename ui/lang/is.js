@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Jan_Feb_Mar_Apr_Maí_Jún_Júl_Ágú_Sep_Okt_Nóv_Des'.split('_'),
     firstDayOfWeek: 0, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'dagar'
+    pluralDay: 'dagar',
+    prevMonth: 'Fyrri mánuður',
+    nextMonth: 'Næsta mánuð',
+    prevYear: 'Fyrra ár',
+    nextYear: 'Á næsta ári',
+    today: 'Í dag',
+    prevRangeYears: range => `Fyrri ${ range } ár`,
+    nextRangeYears: range => `Næst ${ range } ár`
   },
   table: {
     noData: 'Engin gögn tiltæk',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Allar',
     pagination: (start, end, total) => start + '-' + end + ' af ' + total,
     columns: 'Dálkar'
+  },
+  pagination: {
+    first: 'Fyrsta blaðsíða',
+    prev: 'Fyrri blaðsíða',
+    next: 'Næsta blaðsíða',
+    last: 'Síðasta blaðsíða'
   },
   editor: {
     url: 'Slóð',

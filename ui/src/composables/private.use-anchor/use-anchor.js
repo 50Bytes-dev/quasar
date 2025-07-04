@@ -73,9 +73,7 @@ export default function ({
       mobileTouch (evt) {
         anchorEvents.mobileCleanup(evt)
 
-        if (canShow(evt) !== true) {
-          return
-        }
+        if (canShow(evt) !== true) return
 
         proxy.hide(evt)
         anchorEl.value.classList.add('non-selectable')

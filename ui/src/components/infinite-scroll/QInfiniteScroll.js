@@ -51,9 +51,11 @@ export default createComponent({
     )
 
     function immediatePoll () {
-      if (props.disable === true || isFetching.value === true || isWorking.value === false) {
-        return
-      }
+      if (
+        props.disable === true
+        || isFetching.value === true
+        || isWorking.value === false
+      ) return
 
       const
         scrollHeight = getScrollHeight(localScrollTarget),
@@ -71,9 +73,11 @@ export default createComponent({
     }
 
     function trigger () {
-      if (props.disable === true || isFetching.value === true || isWorking.value === false) {
-        return
-      }
+      if (
+        props.disable === true
+        || isFetching.value === true
+        || isWorking.value === false
+      ) return
 
       index++
       isFetching.value = true
@@ -122,9 +126,7 @@ export default createComponent({
         isWorking.value = false
         isFetching.value = false
         localScrollTarget.removeEventListener('scroll', poll, passive)
-        if (poll !== void 0 && poll.cancel !== void 0) {
-          poll.cancel()
-        }
+        poll?.cancel?.()
       }
     }
 
@@ -236,7 +238,7 @@ export default createComponent({
     // expose public methods
     const vm = getCurrentInstance()
     Object.assign(vm.proxy, {
-      poll: () => { poll !== void 0 && poll() },
+      poll: () => { poll?.() },
       trigger, stop, reset, resume, setIndex, updateScrollTarget
     })
 

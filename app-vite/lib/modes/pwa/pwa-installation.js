@@ -1,8 +1,7 @@
-import fs from 'node:fs'
 import fse from 'fs-extra'
 
 import { log, warn } from '../../utils/logger.js'
-import { generateTypesFeatureFlag } from '../../utils/types-feature-flags.js'
+import { isModeInstalled } from '../modes-utils.js'
 
 const defaultVersion = '^7.0.0'
 
@@ -20,15 +19,11 @@ const pwaDeps = {
   'register-service-worker': '^1.7.2'
 }
 
-export function isModeInstalled (appPaths) {
-  return fs.existsSync(appPaths.pwaDir)
-}
-
 export async function addMode ({
   ctx: { appPaths, cacheProxy },
   silent
 }) {
-  if (isModeInstalled(appPaths)) {
+  if (isModeInstalled(appPaths, 'pwa')) {
     if (silent !== true) {
       warn('PWA support detected already. Aborting.')
     }
@@ -49,7 +44,7 @@ export async function addMode ({
 
   const hasTypescript = await cacheProxy.getModule('hasTypescript')
   const { hasEslint } = await cacheProxy.getModule('eslint')
-  const format = hasTypescript ? 'ts' : 'default'
+  const format = hasTypescript ? 'ts' : 'js'
 
   fse.copySync(
     appPaths.resolve.cli(`templates/pwa/${ format }`),
@@ -57,8 +52,6 @@ export async function addMode ({
     // Copy .eslintrc.js only if the app has ESLint
     hasEslint === true ? { filter: src => !src.endsWith('/.eslintrc.cjs') } : void 0
   )
-
-  generateTypesFeatureFlag('pwa', appPaths)
 
   log('Copying PWA icons to /public/icons/ (if they are not already there)...')
   fse.copySync(
@@ -73,7 +66,7 @@ export async function addMode ({
 export async function removeMode ({
   ctx: { appPaths, cacheProxy }
 }) {
-  if (!isModeInstalled(appPaths)) {
+  if (isModeInstalled(appPaths, 'pwa') === false) {
     warn('No PWA support detected. Aborting.')
     return
   }

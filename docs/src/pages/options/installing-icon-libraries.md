@@ -7,7 +7,7 @@ related:
 ---
 
 ::: tip
-**This page refers to using [webfont icons](/vue-components/icon#webfont-icons) only.** [Svg icons](https://quasar.dev/vue-components/icon#svg-icons) do not need any installation step.
+**This page refers to using [webfont icons](/vue-components/icon#webfont-icons) only.** [Svg icons](/vue-components/icon#svg-icons) do not need any installation step.
 :::
 
 You'll most likely want icons in your website/app and Quasar offers an easy way out of the box for the following icon libraries: [Material Icons](https://fonts.google.com/icons?icon.set=Material+Icons), [Material Symbols](https://fonts.google.com/icons?icon.set=Material+Symbols), [Font Awesome](https://fontawesome.com/icons), [Ionicons](http://ionicons.com/), [MDI](https://materialdesignicons.com/), [Eva Icons](https://akveo.github.io/eva-icons), [Themify Icons](https://themify.me/themify-icons), [Line Awesome](https://icons8.com/line-awesome) and [Bootstrap Icons](https://icons.getbootstrap.com/). But you can [add support for others](/vue-components/icon#custom-mapping) by yourself.
@@ -48,9 +48,9 @@ For all available options, visit the [GitHub](https://github.com/quasarframework
 You're now ready to use the [QIcon](/vue-components/icon) component.
 
 ## Using CDN as alternative
-If you want to make use of a CDN (Content Delivery Network), all you need to do is to include style tags in your /index.html or /src/index.template.html file which point to the CDN URL.
+If you want to make use of a CDN (Content Delivery Network), all you need to do is to include style tags in your /index.html file which point to the CDN URL.
 
-In case you follow this path, do not also add the icon sets that you want in `/quasar.config file > extras`. Play with the [UMD Installation Guide](/start/umd#installation) and edit /index.html or /src/index.template.html as described there.
+In case you follow this path, do not also add the icon sets that you want in `/quasar.config file > extras`. Play with the [UMD Installation Guide](/start/umd#installation) and edit /index.html as described there.
 
 ## Using Fontawesome-Pro
 If you have a Fontawesome v6 Pro license and want to use it instead of the Fontawesome Free version, follow these instructions:

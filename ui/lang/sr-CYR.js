@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Јан_Феб_Мар_Апр_Мај_Јун_Јул_Авг_Сеп_Окт_Нов_Дец'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'дана'
+    pluralDay: 'дана',
+    prevMonth: 'Претходни месец',
+    nextMonth: 'Следећег месеца',
+    prevYear: 'Претходне године',
+    nextYear: 'Следеће године',
+    today: 'данас',
+    prevRangeYears: range => `Претходне ${ range } Година`,
+    nextRangeYears: range => `Следежи ${ range } Година`
   },
   table: {
     noData: 'Нема података',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Све',
     pagination: (start, end, total) => start + '-' + end + ' од ' + total,
     columns: 'Колоне'
+  },
+  pagination: {
+    first: 'Прва страница',
+    prev: 'Претходна страница',
+    next: 'Следећа страница',
+    last: 'Последња страна'
   },
   editor: {
     url: 'УРЛ',

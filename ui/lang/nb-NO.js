@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Jan_Feb_Mar_Apr_Mai_Jun_Jul_Aug_Sep_Okt_Nov_Des'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: true,
-    pluralDay: 'dager'
+    pluralDay: 'dager',
+    prevMonth: 'Forrige måned',
+    nextMonth: 'Neste måned',
+    prevYear: 'Forrige år',
+    nextYear: 'Neste år',
+    today: 'I dag',
+    prevRangeYears: range => `Forrige ${ range } år`,
+    nextRangeYears: range => `Neste ${ range } år`
   },
   table: {
     noData: 'Ingen data tilgjengelig',
@@ -41,6 +48,12 @@ export default {
     allRows: 'Alle',
     pagination: (start, end, total) => start + '-' + end + ' av ' + total,
     columns: 'Kolonner'
+  },
+  pagination: {
+    first: 'Første side',
+    prev: 'Forrige side',
+    next: 'Neste side',
+    last: 'Siste side'
   },
   editor: {
     url: 'URL',

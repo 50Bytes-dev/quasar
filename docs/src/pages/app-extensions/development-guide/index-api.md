@@ -133,10 +133,10 @@ api.compatibleWith('@quasar/app', '1.x')
 
 ```js A more complex example
 if (api.hasVite === true) {
-  api.compatibleWith('@quasar/app-vite', '^2.0.0-beta.1')
+  api.compatibleWith('@quasar/app-vite', '^2.0.0')
 }
 else {
-  api.compatbileWith('@quasar/app-webpack', '^4.0.0-beta.1')
+  api.compatbileWith('@quasar/app-webpack', '^4.0.0')
 }
 ```
 
@@ -227,7 +227,7 @@ export default function (api, ctx) {
 
     if (api.hasVite !== true) {
       // make sure boot file transpiles
-      conf.build.transpileDependencies.push(/quasar-app-extension-my-ext[\\/]src[\\/]boot/)
+      conf.build.webpackTranspileDependencies.push(/quasar-app-extension-my-ext[\\/]src[\\/]boot/)
       // if boot file imports anything, make sure that
       // the regex above matches those files too!
     }

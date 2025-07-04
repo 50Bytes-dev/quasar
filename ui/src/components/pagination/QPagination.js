@@ -133,9 +133,8 @@ export default createComponent({
       get: () => props.modelValue,
       set: val => {
         val = parseInt(val, 10)
-        if (props.disable || isNaN(val)) {
-          return
-        }
+        if (props.disable || isNaN(val)) return
+
         const value = between(val, minProp.value, maxProp.value)
         if (props.modelValue !== value) {
           emit('update:modelValue', value)
@@ -318,7 +317,8 @@ export default createComponent({
           getBtn({
             key: 'bls',
             disable: props.disable || props.modelValue <= minProp.value,
-            icon: icons.value[ 0 ]
+            icon: icons.value[ 0 ],
+            'aria-label': $q.lang.pagination.first
           }, minProp.value)
         )
 
@@ -326,7 +326,8 @@ export default createComponent({
           getBtn({
             key: 'ble',
             disable: props.disable || props.modelValue >= maxProp.value,
-            icon: icons.value[ 3 ]
+            icon: icons.value[ 3 ],
+            'aria-label': $q.lang.pagination.last
           }, maxProp.value)
         )
       }
@@ -336,7 +337,8 @@ export default createComponent({
           getBtn({
             key: 'bdp',
             disable: props.disable || props.modelValue <= minProp.value,
-            icon: icons.value[ 1 ]
+            icon: icons.value[ 1 ],
+            'aria-label': $q.lang.pagination.prev
           }, props.modelValue - 1)
         )
 
@@ -344,7 +346,8 @@ export default createComponent({
           getBtn({
             key: 'bdn',
             disable: props.disable || props.modelValue >= maxProp.value,
-            icon: icons.value[ 2 ]
+            icon: icons.value[ 2 ],
+            'aria-label': $q.lang.pagination.next
           }, props.modelValue + 1)
         )
       }

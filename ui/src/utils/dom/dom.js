@@ -37,9 +37,7 @@ export function cssBatch (elements, style) {
 }
 
 export function ready (fn) {
-  if (typeof fn !== 'function') {
-    return
-  }
+  if (typeof fn !== 'function') return
 
   if (document.readyState !== 'loading') {
     return fn()

@@ -18,6 +18,7 @@ import utils from './utils/index.js'
 utils.ensureOutsideProject()
 
 import parseArgs from 'minimist'
+import prompts from 'prompts'
 
 const argv = parseArgs(process.argv.slice(2), {
   alias: {
@@ -27,8 +28,20 @@ const argv = parseArgs(process.argv.slice(2), {
   boolean: [ 'n' ],
 })
 
+/** @type {Record<string, any>} */
+const scope = {
+  // Usage: `pnpm create quasar <project-folder>`
+  // If provided it will skip the projectFolder prompt, but still apply the `format` function after the utils.prompts call
+  projectFolder: argv._[0]?.trim()
+}
+prompts.override(scope)
+
+if (scope.projectFolder) {
+  utils.logger.log(`Using the project folder provided via arguments: ${ scope.projectFolder }`)
+  utils.logger.log()
+}
+
 const defaultProjectFolder = 'quasar-project'
-const scope = {}
 
 await utils.prompts(scope, [
   {
@@ -107,7 +120,7 @@ if (scope.skipDepsInstall !== true) {
       choices: () => (
         utils.runningPackageManager
           ? [
-              { title: `Yes, use ${ utils.runningPackageManager }`, value: utils.runningPackageManager },
+              { title: `Yes, use ${ utils.runningPackageManager.name }`, value: utils.runningPackageManager.name },
               { title: 'No, I will handle that myself', value: false }
             ]
           : [
@@ -144,6 +157,15 @@ if (scope.skipDepsInstall !== true) {
       }
       catch {
         utils.logger.warn('Could not auto lint fix the project folder.')
+      }
+    }
+
+    if (scope.prettier) {
+      try {
+        await utils.formatFolder(scope)
+      }
+      catch {
+        utils.logger.warn('Could not auto format the project folder.')
       }
     }
   }

@@ -41,12 +41,10 @@ export default function ({
 
   function show (evt) {
     if (
-      props.disable === true
-      || (evt !== void 0 && evt.qAnchorHandled === true)
+      (props.disable === true)
+      || (evt?.qAnchorHandled === true)
       || (canShow !== void 0 && canShow(evt) !== true)
-    ) {
-      return
-    }
+    ) return
 
     const listener = props[ 'onUpdate:modelValue' ] !== void 0
 
@@ -66,9 +64,7 @@ export default function ({
   }
 
   function processShow (evt) {
-    if (showing.value === true) {
-      return
-    }
+    if (showing.value === true) return
 
     showing.value = true
 
@@ -83,9 +79,7 @@ export default function ({
   }
 
   function hide (evt) {
-    if (__QUASAR_SSR_SERVER__ || props.disable === true) {
-      return
-    }
+    if (__QUASAR_SSR_SERVER__ || props.disable === true) return
 
     const listener = props[ 'onUpdate:modelValue' ] !== void 0
 
@@ -105,9 +99,7 @@ export default function ({
   }
 
   function processHide (evt) {
-    if (showing.value === false) {
-      return
-    }
+    if (showing.value === false) return
 
     showing.value = false
 

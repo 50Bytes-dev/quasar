@@ -25,7 +25,14 @@ export default {
     monthsShort: 'Ian_Fep_Mat_Ape_Mē_Iun_Iul_Auk_Sēt_Oke_Nōv_Tēs'.split('_'),
     firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
     format24h: false,
-    pluralDay: 'aso'
+    pluralDay: 'aso',
+    prevMonth: 'Masina Mai le masina talu ai',
+    nextMonth: 'Le masina fou',
+    prevYear: 'Tausaga talu ai',
+    nextYear: 'I Le Vafuapalo',
+    today: 'Le asō',
+    prevRangeYears: range => `Talu ai ${ range } tausaga`,
+    nextRangeYears: range => `Le isi ${ range } tausaga`
   },
   table: {
     noData: 'Lēai ni fa\'amatalaga o maua',
@@ -40,6 +47,12 @@ export default {
     allRows: 'Laina \'uma',
     pagination: (start, end, total) => start + '-' + end + ' o ' + total,
     columns: 'Poutū'
+  },
+  pagination: {
+    first: 'Itulau muamua',
+    prev: 'Itulau muamua',
+    next: 'Isi Itulau',
+    last: 'Itulau mulimuli'
   },
   editor: {
     url: 'Tuātusi initaneti',
